@@ -26,25 +26,27 @@ import java.net.URL;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.LinkedList;
+import org.qi4j.bootstrap.ServiceLoader;
 
 /**
  * Implementation of ServiceLoader mechanism in Java.
  */
-public final class ServiceLoader
+public class DefaultServiceLoaderImpl
+    implements ServiceLoader
 {
     private final static LinkedList<ClassLoader> loaders = new LinkedList<ClassLoader>();
 
     static
     {
-        addClassloader( ServiceLoader.class.getClassLoader() );
+        addClassLoader( DefaultServiceLoaderImpl.class.getClassLoader() );
     }
 
-    public static void addClassloader( ClassLoader loader )
+    public static void addClassLoader( ClassLoader loader )
     {
         loaders.add( loader );
     }
 
-    public static void removeClassloader( ClassLoader loader )
+    public static void removeClassLoader( ClassLoader loader )
     {
         loaders.remove( loader );
     }

@@ -19,7 +19,7 @@
 package org.qi4j.bootstrap;
 
 import java.io.IOException;
-import org.qi4j.bootstrap.internal.ServiceLoader;
+import org.qi4j.bootstrap.internal.DefaultServiceLoaderImpl;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.structure.ApplicationModelSPI;
 import org.qi4j.spi.structure.ApplicationSPI;
@@ -33,28 +33,18 @@ import org.qi4j.spi.structure.ApplicationSPI;
  */
 public final class Energy4Java
 {
-    private static ServiceLoader serviceLoader;
+    private ServiceLoader serviceLoader;
 
     private Qi4jRuntime runtime;
 
-    static
-    {
-        serviceLoader = new ServiceLoader();
-    }
-
-    public static ServiceLoader getServiceLoader()
-    {
-        return serviceLoader;
-    }
-
-    public static void setServiceLoader( ServiceLoader aServiceLoader )
-    {
-        serviceLoader = aServiceLoader;
-    }
-
     public Energy4Java()
     {
-        this( findQi4jRuntime() );
+        this( findQi4jRuntime( new DefaultServiceLoaderImpl() ) );
+    }
+
+    public Energy4Java( ServiceLoader serviceLoader )
+    {
+        this( findQi4jRuntime( serviceLoader ) );
     }
 
     public Energy4Java( Qi4jRuntime runtime )
@@ -82,7 +72,7 @@ public final class Energy4Java
         return runtime.spi();
     }
 
-    private static Qi4jRuntime findQi4jRuntime()
+    private static Qi4jRuntime findQi4jRuntime( ServiceLoader serviceLoader )
         throws BootstrapException
     {
 
