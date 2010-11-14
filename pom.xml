@@ -29,9 +29,9 @@
     <url>http://www.qi4j.org/</url>
 
     <scm>
-        <url>http://dscm.ops4j.org/git/gitweb.cgi?p=qi4j-core.git;a=summary</url>
-        <connection>scm:git:git://dscm.ops4j.org/qi4j-core.git</connection>
-        <developerConnection>scm:git:git@dscm.ops4j.org:qi4j-core.git</developerConnection>
+        <url>https://github.com/Qi4j/qi4j-core</url>
+        <connection>scm:git:git://github.com/Qi4j/qi4j-core.git</connection>
+        <developerConnection>scm:git:git@github.com:Qi4j/qi4j-core.git</developerConnection>
     </scm>
 
     <developers>
