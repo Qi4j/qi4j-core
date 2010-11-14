@@ -14,6 +14,7 @@
 
 package org.qi4j.bootstrap;
 
+import org.qi4j.bootstrap.internal.DefaultServiceLoaderImpl;
 import org.qi4j.spi.structure.ApplicationSPI;
 
 /**
@@ -31,8 +32,8 @@ public class Main
     {
         Energy4Java energy4Java = new Energy4Java();
 
-        Iterable<ApplicationAssembler> assemblers = Energy4Java.getServiceLoader()
-            .providers( ApplicationAssembler.class );
+        ServiceLoader loader = new DefaultServiceLoaderImpl();
+        Iterable<ApplicationAssembler> assemblers = loader.providers( ApplicationAssembler.class );
         for( ApplicationAssembler assembler : assemblers )
         {
             ApplicationSPI application = energy4Java.newApplication( assembler );
