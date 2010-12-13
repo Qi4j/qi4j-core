@@ -29,7 +29,7 @@ import org.qi4j.api.injection.scope.Structure;
  * @see UnitOfWorkPropagation
  * @see UnitOfWorkDiscardOn
  */
-@AppliesTo( UnitOfWorkPropagation.class )
+@AppliesTo( { UnitOfWorkPropagation.class, UnitOfWorkDiscardOn.class } )
 public class UnitOfWorkConcern
     extends GenericConcern
 {
