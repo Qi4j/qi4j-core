@@ -21,6 +21,7 @@ import java.util.Set;
 import org.qi4j.spi.composite.StateDescriptor;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
+import org.qi4j.spi.entity.association.NamedAssociationDescriptor;
 
 public interface EntityStateDescriptor
     extends StateDescriptor
@@ -29,7 +30,11 @@ public interface EntityStateDescriptor
 
     ManyAssociationDescriptor getManyAssociationByName( String name );
 
+    NamedAssociationDescriptor getNamedAssociationByName( String name );
+
     <T extends AssociationDescriptor> Set<T> associations();
 
     <T extends ManyAssociationDescriptor> Set<T> manyAssociations();
+
+    <T extends NamedAssociationDescriptor> Set<T> namedAssociations();
 }

@@ -400,7 +400,7 @@ public final class ModuleAssemblyImpl
 
       for (EntityAssemblyImpl entityDeclaration : entityAssemblies.values())
       {
-         entityDeclaration.addEntityModel(entityModels, metaInfoDeclaration, metaInfoDeclaration, metaInfoDeclaration, helper);
+         entityDeclaration.addEntityModel(entityModels, metaInfoDeclaration, metaInfoDeclaration, metaInfoDeclaration, metaInfoDeclaration, helper);
       }
 
       for (ObjectAssemblyImpl objectDeclaration : objectAssemblies.values())

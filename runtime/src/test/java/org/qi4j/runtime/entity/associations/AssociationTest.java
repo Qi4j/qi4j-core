@@ -21,13 +21,17 @@ import org.junit.Test;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.entity.association.NamedAssociation;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
-import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.core.testsupport.AbstractQi4jTest;
+
+import static org.junit.Assert.*;
 
 /**
  * Tests for associations
@@ -71,15 +75,33 @@ public class AssociationTest
 
             System.out.println( "Name is:" + company.name().get() );
 
-            EntityBuilder<Person> builder = unitOfWork.newEntityBuilder( Person.class );
-            builder.instance().name().set( "Rickard" );
-            Person rickard = builder.newInstance();
+            Person rickard = createPerson( unitOfWork, "Rickard" );
+            Person niclas = createPerson( unitOfWork, "Niclas" );
+            Person peter = createPerson( unitOfWork, "Peter" );
 
             company.employees().add( 0, rickard );
+            company.employees().add( 1, niclas );
+            company.employees().add( 2, peter );
+
+            company.roles().put( "CEO", rickard );
+            company.roles().put( "CTO", niclas );
+            company.roles().put( "COO", peter );
 
             for( Employer employer : rickard.employers() )
             {
-                System.out.println( ( (Nameable) employer ).name() );
+                assertEquals( "Jayway", ( (Nameable) employer ).name().get() );
+            }
+
+            assertEquals( "Niclas", company.roles().get( "CTO" ).name().get() );
+            assertEquals( "Rickard", company.roles().get( "CEO" ).name().get() );
+            assertEquals( "Peter", company.roles().get( "COO" ).name().get() );
+            try
+            {
+                company.roles().get( "CFO" ).name().get();
+                fail( "Looked up an non-existent NamedAsssociaion.");
+            } catch( NoSuchEntityException e )
+            {
+                // expected
             }
         }
         finally
@@ -88,12 +110,20 @@ public class AssociationTest
         }
     }
 
+    private Person createPerson( UnitOfWork unitOfWork, String name )
+    {
+        EntityBuilder<Person> builder = unitOfWork.newEntityBuilder( Person.class );
+        builder.instance().name().set( name );
+        return builder.newInstance();
+    }
+
     public interface Company
         extends AssociationTest.Nameable,
                 AssociationTest.Employer,
                 AssociationTest.StandardComposite,
                 EntityComposite
     {
+        NamedAssociation<Person> roles();
     }
 
     public interface Person

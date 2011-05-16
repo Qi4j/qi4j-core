@@ -76,4 +76,6 @@ public interface EntityState
     void setAssociation( QualifiedName stateName, EntityReference newEntity );
 
     ManyAssociationState getManyAssociation( QualifiedName stateName );
+
+    NamedAssociationState getNamedAssociation( QualifiedName stateName );
 }

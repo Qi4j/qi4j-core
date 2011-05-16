@@ -1,3 +1,22 @@
+/*
+ * Copyright (c) 2009, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2011, Niclas Hedhman. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+ * implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.qi4j.entitystore.map;
 
 import org.json.*;
@@ -24,6 +43,7 @@ import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
+import org.qi4j.spi.entity.association.NamedAssociationDescriptor;
 import org.qi4j.spi.entitystore.*;
 import org.qi4j.spi.entitystore.helpers.DefaultEntityState;
 import org.qi4j.spi.property.PropertyDescriptor;
@@ -404,29 +424,8 @@ public class MapEntityStoreMixin
                 }
             }
 
-            JSONObject manyAssocs = jsonObject.getJSONObject( "manyassociations" );
-            Map<QualifiedName, List<EntityReference>> manyAssociations = new HashMap<QualifiedName, List<EntityReference>>();
-            for( ManyAssociationDescriptor manyAssociationType : entityDescriptor.state().manyAssociations() )
-            {
-                List<EntityReference> references = new ArrayList<EntityReference>();
-                try
-                {
-                    JSONArray jsonValues = manyAssocs.getJSONArray( manyAssociationType.qualifiedName().name() );
-                    for( int i = 0; i < jsonValues.length(); i++ )
-                    {
-                        Object jsonValue = jsonValues.getString( i );
-                        EntityReference value = jsonValue == JSONObject.NULL ? null : EntityReference.parseEntityReference(
-                            (String) jsonValue );
-                        references.add( value );
-                    }
-                    manyAssociations.put( manyAssociationType.qualifiedName(), references );
-                }
-                catch( JSONException e )
-                {
-                    // ManyAssociation not found, default to empty one
-                    manyAssociations.put( manyAssociationType.qualifiedName(), references );
-                }
-            }
+            Map<QualifiedName, List<EntityReference>> manyAssociations = createManyAssociations( jsonObject, entityDescriptor );
+            Map<QualifiedName,Map<String, EntityReference>> namedAssociations = createNamedAssociations( jsonObject, entityDescriptor );
 
             return new DefaultEntityState( unitOfWork,
                                            version,
@@ -436,13 +435,76 @@ public class MapEntityStoreMixin
                                            entityDescriptor,
                                            properties,
                                            associations,
-                                           manyAssociations
+                                           manyAssociations,
+                                           namedAssociations
             );
         }
         catch( JSONException e )
         {
             throw new EntityStoreException( e );
         }
+    }
+
+    private Map<QualifiedName, List<EntityReference>> createManyAssociations( JSONObject jsonObject,
+                                                                              EntityDescriptor entityDescriptor
+    )
+        throws JSONException
+    {
+        Map<QualifiedName, List<EntityReference>> manyAssociations = new HashMap<QualifiedName, List<EntityReference>>();
+        JSONObject manyAssocs = jsonObject.getJSONObject( "manyassociations" );
+        for( ManyAssociationDescriptor manyAssociationType : entityDescriptor.state().manyAssociations() )
+        {
+            List<EntityReference> references = new ArrayList<EntityReference>();
+            try
+            {
+                JSONArray jsonValues = manyAssocs.getJSONArray( manyAssociationType.qualifiedName().name() );
+                for( int i = 0; i < jsonValues.length(); i++ )
+                {
+                    Object jsonValue = jsonValues.getString( i );
+                    EntityReference value = jsonValue == JSONObject.NULL ? null : EntityReference.parseEntityReference(
+                        (String) jsonValue );
+                    references.add( value );
+                }
+                manyAssociations.put( manyAssociationType.qualifiedName(), references );
+            }
+            catch( JSONException e )
+            {
+                // ManyAssociation not found, default to empty one
+                manyAssociations.put( manyAssociationType.qualifiedName(), references );
+            }
+        }
+        return manyAssociations;
+    }
+
+    private Map<QualifiedName, Map<String,EntityReference>> createNamedAssociations( JSONObject jsonObject,
+                                                                              EntityDescriptor entityDescriptor
+    )
+        throws JSONException
+    {
+        Map<QualifiedName, Map<String,EntityReference>> namedAssociations = new HashMap<QualifiedName, Map<String,EntityReference>>();
+        JSONObject namedAssocs = jsonObject.getJSONObject( "namedassociations" );
+        for( NamedAssociationDescriptor namedAssociationType : entityDescriptor.state().namedAssociations() )
+        {
+            Map<String, EntityReference> references = new HashMap<String,EntityReference>();
+            try
+            {
+                JSONObject jsonValues = namedAssocs.getJSONObject( namedAssociationType.qualifiedName().name() );
+                for( String name : jsonValues )
+                {
+                    Object jsonValue = jsonValues.getString( name );
+                    EntityReference value = jsonValue == JSONObject.NULL ? null : EntityReference.parseEntityReference(
+                        (String) jsonValue );
+                    references.put( name, value );
+                }
+                namedAssociations.put( namedAssociationType.qualifiedName(), references );
+            }
+            catch( JSONException e )
+            {
+                // NamedAssociation not found, default to empty one
+                namedAssociations.put( namedAssociationType.qualifiedName(), references );
+            }
+        }
+        return namedAssociations;
     }
 
     public JSONObject getState( String id )

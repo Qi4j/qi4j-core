@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2009, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2011, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +41,8 @@ public interface MapEntityStore
         modified,           // When entity was last modified according to System.currentTimeMillis()
         properties,         // Map of properties
         associations,       // Map of associations
-        manyassociations    // Map of manyassociations
+        manyassociations,   // Map of manyassociations
+        namedassociations   // Map of namedassociations
     }
 
     Reader get( EntityReference entityReference )

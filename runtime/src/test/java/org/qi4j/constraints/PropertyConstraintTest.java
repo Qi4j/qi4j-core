@@ -29,7 +29,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.constraints.MinLengthConstraint;
 import org.qi4j.library.constraints.annotation.Matches;
 import org.qi4j.library.constraints.annotation.MinLength;
-import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.core.testsupport.AbstractQi4jTest;
 
 import static org.junit.Assert.*;
 

@@ -21,7 +21,7 @@ import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.spi.composite.TransientDescriptor;
-import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.core.testsupport.AbstractQi4jTest;
 
 import static org.junit.Assert.*;
 

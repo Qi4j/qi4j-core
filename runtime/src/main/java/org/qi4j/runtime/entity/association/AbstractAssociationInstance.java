@@ -126,4 +126,43 @@ public abstract class AbstractAssociationInstance<T>
     }
 
     protected abstract boolean isSet();
+
+    @Override
+    public boolean equals( Object o )
+    {
+        if( this == o )
+        {
+            return true;
+        }
+        if( !( o instanceof AbstractAssociationInstance ) )
+        {
+            return false;
+        }
+
+        AbstractAssociationInstance that = (AbstractAssociationInstance) o;
+
+        if( !associationInfo.equals( that.associationInfo ) )
+        {
+            return false;
+        }
+        if( !entityState.equals( that.entityState ) )
+        {
+            return false;
+        }
+        if( !unitOfWork.equals( that.unitOfWork ) )
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int result = associationInfo.hashCode();
+        result = 31 * result + unitOfWork.hashCode();
+        result = 31 * result + entityState.hashCode();
+        return result;
+    }
 }
