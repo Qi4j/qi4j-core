@@ -44,6 +44,7 @@ import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 import org.qi4j.spi.entity.association.NamedAssociationDescriptor;
+import org.qi4j.spi.entity.association.NamedEntityReference;
 import org.qi4j.spi.entitystore.*;
 import org.qi4j.spi.entitystore.helpers.DefaultEntityState;
 import org.qi4j.spi.property.PropertyDescriptor;
@@ -323,7 +324,19 @@ public class MapEntityStoreMixin
                 }
                 assocs.endArray();
             }
-            manyAssociations.endObject().endObject();
+
+            JSONWriter namedAssociations = manyAssociations.endObject().key( "namedassociations" ).object();
+            for( Map.Entry<QualifiedName, Map<String,EntityReference>> stateNameListEntry : state.namedAssociations()
+                .entrySet() )
+            {
+                JSONWriter assocs = manyAssociations.key( stateNameListEntry.getKey().name() ).array();
+                for( EntityReference entityReference : stateNameListEntry.getValue().values() )
+                {
+                    assocs.value( entityReference.identity() );
+                }
+                assocs.endArray();
+            }
+            namedAssociations.endObject().endObject();
         }
         catch( JSONException e )
         {

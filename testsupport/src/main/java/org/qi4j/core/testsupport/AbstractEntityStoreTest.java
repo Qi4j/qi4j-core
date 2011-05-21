@@ -30,8 +30,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 /**
@@ -51,6 +50,8 @@ public abstract class AbstractEntityStoreTest
     {
         module.services( UuidIdentityGeneratorService.class );
         module.entities( TestEntity.class );
+        module.entities( Company.class );
+        module.entities( Person.class );
         module.values( TestValue.class, TestValue2.class, TjabbaValue.class );
         module.objects( getClass() );
         module.forMixin( Employer.class )
@@ -397,26 +398,21 @@ public abstract class AbstractEntityStoreTest
             company.employees().add( 1, niclas );
             company.employees().add( 2, peter );
 
-            company.roles().put( "CEO", rickard );
-            company.roles().put( "CTO", niclas );
-            company.roles().put( "COO", peter );
+            NamedAssociation<Person> roles = company.roles();
+            roles.put( "CEO", rickard );
+            roles.put( "CTO", niclas );
+            roles.put( "COO", peter );
 
             for( Employer employer : rickard.employers() )
             {
                 assertEquals( "Jayway", ( (Nameable) employer ).name().get() );
             }
 
-            assertEquals( "Niclas", company.roles().get( "CTO" ).name().get() );
-            assertEquals( "Rickard", company.roles().get( "CEO" ).name().get() );
-            assertEquals( "Peter", company.roles().get( "COO" ).name().get() );
-            try
-            {
-                company.roles().get( "CFO" ).name().get();
-                fail( "Looked up an non-existent NamedAsssociaion.");
-            } catch( NoSuchEntityException e )
-            {
-                // expected
-            }
+            assertEquals( "Niclas", roles.get( "CTO" ).name().get() );
+            assertEquals( "Rickard", roles.get( "CEO" ).name().get() );
+            assertEquals( "Peter", roles.get( "COO" ).name().get() );
+            Person cfo = roles.get( "CFO" );
+            assertNull( "Make sure CFO is not found.", cfo );
         }
         finally
         {
@@ -424,15 +420,13 @@ public abstract class AbstractEntityStoreTest
         }
     }
 
-
-    private Company createCompany(String companyName)
+    private Company createCompany( String companyName )
     {
         UnitOfWork uow = unitOfWorkFactory.currentUnitOfWork();
         EntityBuilder<Company> builder = uow.newEntityBuilder( Company.class );
         builder.instance().name().set( companyName );
         return builder.newInstance();
     }
-
 
     private Person createPerson( String personName )
     {
@@ -548,7 +542,6 @@ public abstract class AbstractEntityStoreTest
     {
         ManyAssociation<Employer> employers();
     }
-
 
     public interface TestValue2
         extends ValueComposite
