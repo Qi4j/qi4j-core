@@ -68,7 +68,7 @@ public final class EntityStateModel
         return new EntityStateInstance( propertiesModel.newInstance( entityState ),
                                         associationsModel.newInstance( entityState, uow ),
                                         manyAssociationsModel.newInstance( entityState, uow ),
-                                        namedAssociationsModel.newInstance( entityState, uow ));
+                                        namedAssociationsModel.newInstance( entityState, uow ) );
     }
 
     @Override

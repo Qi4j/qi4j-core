@@ -165,7 +165,6 @@ public final class StateInjectionProviderFactory
             return new NamedAssociationInjectionProvider( model );
         }
 
-
         throw new InjectionProviderException( "Injected value has invalid type" );
     }
 

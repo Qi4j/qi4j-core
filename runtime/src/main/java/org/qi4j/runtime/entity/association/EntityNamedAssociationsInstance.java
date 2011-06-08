@@ -18,11 +18,9 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.api.entity.association.EntityStateHolder;
-import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.entity.association.NamedAssociation;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 import org.qi4j.spi.entity.association.NamedAssociationDescriptor;
 
 /**

@@ -62,7 +62,7 @@ public class TransientsModel
         {
             if( Composite.class.isAssignableFrom( mixinType ) )
             {
-                if( mixinType.equals( aTransient.type() ) && aTransient.visibility().ordinal() >= visibility.ordinal())
+                if( mixinType.equals( aTransient.type() ) && aTransient.visibility().ordinal() >= visibility.ordinal() )
                 {
                     if( foundModel != null )
                     {

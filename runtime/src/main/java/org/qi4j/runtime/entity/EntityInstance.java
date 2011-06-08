@@ -26,6 +26,7 @@ import org.qi4j.api.entity.Identity;
 import org.qi4j.api.entity.LifecycleException;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.entity.association.NamedAssociation;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkException;
@@ -40,6 +41,7 @@ import org.qi4j.spi.entity.EntityStateDescriptor;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
+import org.qi4j.spi.entity.association.NamedAssociationDescriptor;
 
 /**
  * Entity instance
@@ -277,6 +279,20 @@ public final class EntityInstance
                 ManyAssociation manyAssoc = state.getManyAssociation( association.accessor() );
                 for( Object entity : manyAssoc )
                 {
+                    aggregatedEntities.add( entity );
+                }
+            }
+        }
+
+        Set<NamedAssociationDescriptor> namedAssociations = stateDescriptor.namedAssociations();
+        for( NamedAssociationDescriptor association : namedAssociations )
+        {
+            if( association.isAggregated() )
+            {
+                NamedAssociation namedAssoc = state.getNamedAssociation( association.accessor() );
+                for( String entityId : namedAssoc )
+                {
+                    Object entity = namedAssoc.get( entityId );
                     aggregatedEntities.add( entity );
                 }
             }

@@ -81,7 +81,7 @@ public final class NamedAssociationInstance<T>
 
         try
         {
-            return associated().remove( (( Identity) entity).identity().get() );
+            return associated().remove( ( (Identity) entity ).identity().get() );
         }
         finally
         {

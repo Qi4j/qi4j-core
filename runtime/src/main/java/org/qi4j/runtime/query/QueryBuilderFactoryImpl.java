@@ -86,7 +86,6 @@ public final class QueryBuilderFactoryImpl
             throw new MissingIndexingSystemException();
         }
 
-
         NamedQueryDescriptor query = serviceReference.metaInfo( NamedQueries.class ).getQuery( name );
         return new NamedQueryImpl<T>( finder, unitOfWork, query, resultType );
     }

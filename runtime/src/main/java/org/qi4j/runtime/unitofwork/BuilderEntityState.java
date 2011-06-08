@@ -37,7 +37,7 @@ public final class BuilderEntityState
     private final Map<QualifiedName, Object> properties;
     private final Map<QualifiedName, EntityReference> associations;
     private final Map<QualifiedName, ManyAssociationState> manyAssociations;
-    private final Map<QualifiedName, NamedAssociationState>  namedAssociations;
+    private final Map<QualifiedName, NamedAssociationState> namedAssociations;
 
     public BuilderEntityState( EntityDescriptor type, EntityReference reference )
     {

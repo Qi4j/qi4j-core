@@ -1,6 +1,4 @@
-/*
- * Copyright 2007 Rickard Öberg.
- * Copyright 2008 Alin Dreghiciu.
+/*  Copyright 2008 Edward Yakop.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,21 +13,13 @@
  *
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 package org.qi4j.api.query.grammar;
 
 /**
- * JAVADOC Add JavaDoc
+ * An expression related to {@link org.qi4j.api.entity.association.NamedAssociation}.
  */
-public interface BooleanExpression
+public interface NamedAssociationReference
+    extends AssociationReference
 {
-    /**
-     * Evaluates the boolean expression against a target object (composite?)
-     *
-     * @param target target object
-     *
-     * @return true if boolean expression evaluates to TRUE for the target object
-     */
-    boolean eval( Object target );
 }

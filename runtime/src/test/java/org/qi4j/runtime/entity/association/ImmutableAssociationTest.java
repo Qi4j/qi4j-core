@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.runtime.entity.associations;
+package org.qi4j.runtime.entity.association;
 
 import org.junit.Test;
 import org.qi4j.api.common.Optional;

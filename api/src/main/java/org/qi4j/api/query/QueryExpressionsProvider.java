@@ -36,6 +36,8 @@ import org.qi4j.api.query.grammar.LessThanPredicate;
 import org.qi4j.api.query.grammar.ManyAssociationContainsPredicate;
 import org.qi4j.api.query.grammar.ManyAssociationReference;
 import org.qi4j.api.query.grammar.MatchesPredicate;
+import org.qi4j.api.query.grammar.NamedAssociationContainsPredicate;
+import org.qi4j.api.query.grammar.NamedAssociationReference;
 import org.qi4j.api.query.grammar.Negation;
 import org.qi4j.api.query.grammar.NotEqualsPredicate;
 import org.qi4j.api.query.grammar.OrderBy;
@@ -146,5 +148,10 @@ public interface QueryExpressionsProvider
 
     <T> ManyAssociationContainsPredicate<T> newManyAssociationContainsPredicate(
         ManyAssociationReference associationRef, SingleValueExpression<T> singleValueExpression
+    );
+
+    <T> NamedAssociationContainsPredicate<T> newNamedAssociationContainsPredicate(
+        NamedAssociationReference assocRef,
+        SingleValueExpression<T> singleValueExpression
     );
 }

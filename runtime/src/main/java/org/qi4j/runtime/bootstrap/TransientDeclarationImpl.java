@@ -26,7 +26,7 @@ public final class TransientDeclarationImpl
 {
     private Iterable<TransientAssemblyImpl> assemblies;
 
-    public TransientDeclarationImpl( Iterable<TransientAssemblyImpl> assemblies)
+    public TransientDeclarationImpl( Iterable<TransientAssemblyImpl> assemblies )
     {
         this.assemblies = assemblies;
     }

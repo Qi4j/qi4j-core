@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.runtime.entity.associations;
+package org.qi4j.runtime.entity.association;
 
 import java.io.Serializable;
 import javax.swing.Icon;

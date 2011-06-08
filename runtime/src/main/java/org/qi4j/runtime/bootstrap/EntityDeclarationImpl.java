@@ -27,7 +27,7 @@ public final class EntityDeclarationImpl
 {
     private Iterable<EntityAssemblyImpl> entities;
 
-    public EntityDeclarationImpl( Iterable<EntityAssemblyImpl> entities)
+    public EntityDeclarationImpl( Iterable<EntityAssemblyImpl> entities )
     {
         this.entities = entities;
     }

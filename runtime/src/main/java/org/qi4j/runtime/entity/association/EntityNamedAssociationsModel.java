@@ -139,7 +139,8 @@ public final class EntityNamedAssociationsModel
     {
         for( NamedAssociationModel namedAssociationModel : namedAssociationModels )
         {
-            NamedAssociation namedAssociation = entityNamedAssociationsInstance.namedAssociationFor( namedAssociationModel.accessor() );
+            NamedAssociation namedAssociation = entityNamedAssociationsInstance.namedAssociationFor( namedAssociationModel
+                                                                                                         .accessor() );
             namedAssociationModel.checkAssociationConstraints( namedAssociation );
         }
     }
