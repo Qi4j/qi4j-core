@@ -39,7 +39,6 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStateDescriptor;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
-import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 
 /**
  * Entity instance
@@ -269,8 +268,8 @@ public final class EntityInstance
                 }
             }
         }
-        Set<ManyAssociationDescriptor> manyAssociations = stateDescriptor.manyAssociations();
-        for( ManyAssociationDescriptor association : manyAssociations )
+        Set<AssociationDescriptor> manyAssociations = stateDescriptor.manyAssociations();
+        for( AssociationDescriptor association : manyAssociations )
         {
             if( association.isAggregated() )
             {

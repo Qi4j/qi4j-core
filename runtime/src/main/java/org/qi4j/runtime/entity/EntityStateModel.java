@@ -31,8 +31,6 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStateDescriptor;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.AssociationType;
-import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
-import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
 
 /**
@@ -81,7 +79,7 @@ public final class EntityStateModel
         return associationsModel.getAssociationByName( name );
     }
 
-    public ManyAssociationDescriptor getManyAssociationByName( String name )
+    public AssociationDescriptor getManyAssociationByName( String name )
     {
         return manyAssociationsModel.getManyAssociationByName( name );
     }
@@ -91,7 +89,7 @@ public final class EntityStateModel
         return associationsModel.associations();
     }
 
-    public <T extends ManyAssociationDescriptor> Set<T> manyAssociations()
+    public <T extends AssociationDescriptor> Set<T> manyAssociations()
     {
         return manyAssociationsModel.manyAssociations();
     }
@@ -106,7 +104,7 @@ public final class EntityStateModel
         return associationsModel.associationTypes();
     }
 
-    public Set<ManyAssociationType> manyAssociationTypes()
+    public Set<AssociationType> manyAssociationTypes()
     {
         return manyAssociationsModel.manyAssociationTypes();
     }

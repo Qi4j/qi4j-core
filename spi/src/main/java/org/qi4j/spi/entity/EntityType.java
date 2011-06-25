@@ -18,7 +18,6 @@ import java.io.Serializable;
 import java.util.Set;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.spi.entity.association.AssociationType;
-import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
 
 /**
@@ -36,7 +35,7 @@ public final class EntityType
     private final boolean queryable;
     private final Set<PropertyType> properties;
     private final Set<AssociationType> associations;
-    private final Set<ManyAssociationType> manyAssociations;
+    private final Set<AssociationType> manyAssociations;
     private final Set<String> mixinTypes;
 
     public EntityType( final TypeName entityType,
@@ -44,7 +43,7 @@ public final class EntityType
                        final Set<String> mixinTypes,
                        final Set<PropertyType> properties,
                        final Set<AssociationType> associations,
-                       final Set<ManyAssociationType> manyAssociations
+                       final Set<AssociationType> manyAssociations
     )
     {
         this.type = entityType;
@@ -86,7 +85,7 @@ public final class EntityType
         return associations;
     }
 
-    public Set<ManyAssociationType> manyAssociations()
+    public Set<AssociationType> manyAssociations()
     {
         return manyAssociations;
     }

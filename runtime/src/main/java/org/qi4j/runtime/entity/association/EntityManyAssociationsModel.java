@@ -32,8 +32,8 @@ import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.composite.ValueConstraintsModel;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
-import org.qi4j.spi.entity.association.ManyAssociationType;
+import org.qi4j.spi.entity.association.AssociationDescriptor;
+import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.util.MethodKeyMap;
 import org.qi4j.spi.util.MethodSet;
 import org.qi4j.spi.util.MethodValueMap;
@@ -100,7 +100,7 @@ public final class EntityManyAssociationsModel
         }
     }
 
-    public <T extends ManyAssociationDescriptor> Set<T> manyAssociations()
+    public <T extends AssociationDescriptor> Set<T> manyAssociations()
     {
         return (Set<T>) manyAssociationModels;
     }
@@ -110,7 +110,7 @@ public final class EntityManyAssociationsModel
         return mapMethodAssociationModel.get( accessor ).newInstance( uow, entityState );
     }
 
-    public ManyAssociationDescriptor getManyAssociationByName( String name )
+    public AssociationDescriptor getManyAssociationByName( String name )
     {
         for( ManyAssociationModel associationModel : manyAssociationModels )
         {
@@ -123,12 +123,12 @@ public final class EntityManyAssociationsModel
         return null;
     }
 
-    public Set<ManyAssociationType> manyAssociationTypes()
+    public Set<AssociationType> manyAssociationTypes()
     {
-        Set<ManyAssociationType> associationTypes = new LinkedHashSet<ManyAssociationType>();
+        Set<AssociationType> associationTypes = new LinkedHashSet<AssociationType>();
         for( ManyAssociationModel associationModel : manyAssociationModels )
         {
-            associationTypes.add( associationModel.manyAssociationType() );
+            associationTypes.add( associationModel.associationType() );
         }
         return associationTypes;
     }

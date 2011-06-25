@@ -23,7 +23,6 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
-import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 import org.qi4j.spi.entitystore.*;
 import org.qi4j.spi.entitystore.helpers.DefaultEntityState;
 import org.qi4j.spi.property.PropertyDescriptor;
@@ -406,7 +405,7 @@ public class MapEntityStoreMixin
 
             JSONObject manyAssocs = jsonObject.getJSONObject( "manyassociations" );
             Map<QualifiedName, List<EntityReference>> manyAssociations = new HashMap<QualifiedName, List<EntityReference>>();
-            for( ManyAssociationDescriptor manyAssociationType : entityDescriptor.state().manyAssociations() )
+            for( AssociationDescriptor manyAssociationType : entityDescriptor.state().manyAssociations() )
             {
                 List<EntityReference> references = new ArrayList<EntityReference>();
                 try

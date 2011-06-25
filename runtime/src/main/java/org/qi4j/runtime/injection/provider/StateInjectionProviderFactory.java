@@ -21,7 +21,6 @@ import org.qi4j.spi.composite.TransientDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityStateDescriptor;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
-import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.spi.value.ValueDescriptor;
@@ -128,7 +127,7 @@ public final class StateInjectionProviderFactory
             {
                 name = annotation.value();
             }
-            ManyAssociationDescriptor model = descriptor.getManyAssociationByName( name );
+            AssociationDescriptor model = descriptor.getManyAssociationByName( name );
 
             // No such association found
             if( model == null )
@@ -196,9 +195,9 @@ public final class StateInjectionProviderFactory
     static private class ManyAssociationInjectionProvider
         implements InjectionProvider, Serializable
     {
-        private final ManyAssociationDescriptor manyAssociationDescriptor;
+        private final AssociationDescriptor manyAssociationDescriptor;
 
-        public ManyAssociationInjectionProvider( ManyAssociationDescriptor manyAssociationDescriptor )
+        public ManyAssociationInjectionProvider( AssociationDescriptor manyAssociationDescriptor )
         {
             this.manyAssociationDescriptor = manyAssociationDescriptor;
         }

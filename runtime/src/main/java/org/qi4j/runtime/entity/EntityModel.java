@@ -55,7 +55,6 @@ import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
-import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 import org.qi4j.spi.entitystore.EntityAlreadyExistsException;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
@@ -284,10 +283,10 @@ public final class EntityModel
 
         {
             // Set new many-manyAssociations to empty
-            Set<ManyAssociationDescriptor> entityAssociations = state().manyAssociations();
-            for( ManyAssociationDescriptor associationDescriptor : entityAssociations )
+            Set<AssociationDescriptor> entityAssociations = state().manyAssociations();
+            for( AssociationDescriptor associationDescriptor : entityAssociations )
             {
-                entityState.getManyAssociation( associationDescriptor.manyAssociationType().qualifiedName() );
+                entityState.getManyAssociation( associationDescriptor.associationType().qualifiedName() );
             }
         }
     }

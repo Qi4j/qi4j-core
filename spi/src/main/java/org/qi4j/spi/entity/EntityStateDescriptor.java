@@ -20,16 +20,15 @@ package org.qi4j.spi.entity;
 import java.util.Set;
 import org.qi4j.spi.composite.StateDescriptor;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
-import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 
 public interface EntityStateDescriptor
     extends StateDescriptor
 {
     AssociationDescriptor getAssociationByName( String name );
 
-    ManyAssociationDescriptor getManyAssociationByName( String name );
+    AssociationDescriptor getManyAssociationByName( String name );
 
     <T extends AssociationDescriptor> Set<T> associations();
 
-    <T extends ManyAssociationDescriptor> Set<T> manyAssociations();
+    <T extends AssociationDescriptor> Set<T> manyAssociations();
 }
