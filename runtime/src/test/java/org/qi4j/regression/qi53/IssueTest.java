@@ -11,7 +11,7 @@ import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.Property;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.core.testsupport.AbstractQi4jTest;
 
 import static junit.framework.Assert.*;
 

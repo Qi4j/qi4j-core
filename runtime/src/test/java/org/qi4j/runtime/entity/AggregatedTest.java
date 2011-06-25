@@ -20,6 +20,7 @@ import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.entity.association.NamedAssociation;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -27,7 +28,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
-import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.core.testsupport.AbstractQi4jTest;
 
 import static org.junit.Assert.*;
 
@@ -96,6 +97,8 @@ public class AggregatedTest
                     companyEntity.director().set( employeeEntity );
                     companyEntity.employees().add( 0, employeeEntity );
                     companyEntity.employees().add( 0, employeeEntity2 );
+                    companyEntity.titles().put( employeeEntity.title().get(), employeeEntity );
+                    companyEntity.titles().put( employeeEntity2.title().get(), employeeEntity2 );
                     companyEntity = builder.newInstance();
                 }
 
@@ -164,6 +167,9 @@ public class AggregatedTest
 
         @Aggregated
         ManyAssociation<EmployeeEntity> employees();
+
+        @Aggregated
+        NamedAssociation<EmployeeEntity> titles();
     }
 
     public interface EmployeeEntity

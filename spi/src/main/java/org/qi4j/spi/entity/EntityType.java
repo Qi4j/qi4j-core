@@ -36,6 +36,7 @@ public final class EntityType
     private final Set<PropertyType> properties;
     private final Set<AssociationType> associations;
     private final Set<AssociationType> manyAssociations;
+    private final Set<AssociationType> namedAssociations;
     private final Set<String> mixinTypes;
 
     public EntityType( final TypeName entityType,
@@ -43,7 +44,8 @@ public final class EntityType
                        final Set<String> mixinTypes,
                        final Set<PropertyType> properties,
                        final Set<AssociationType> associations,
-                       final Set<AssociationType> manyAssociations
+                       final Set<AssociationType> manyAssociations,
+                       final Set<AssociationType> namedAssociations
     )
     {
         this.type = entityType;
@@ -52,6 +54,7 @@ public final class EntityType
         this.properties = properties;
         this.associations = associations;
         this.manyAssociations = manyAssociations;
+        this.namedAssociations = namedAssociations;
         this.uri = "urn:qi4j:type:" + entityType.normalized();
     }
 
@@ -88,6 +91,11 @@ public final class EntityType
     public Set<AssociationType> manyAssociations()
     {
         return manyAssociations;
+    }
+
+    public Set<AssociationType> namedAssociations()
+    {
+        return namedAssociations;
     }
 
     @Override

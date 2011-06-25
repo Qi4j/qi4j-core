@@ -22,7 +22,7 @@ import org.qi4j.api.structure.Application;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
-import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.core.testsupport.AbstractQi4jTest;
 
 public class ApplicationModeTest
     extends AbstractQi4jTest

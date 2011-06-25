@@ -26,11 +26,10 @@ import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.core.testsupport.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
 
 import java.util.concurrent.Callable;

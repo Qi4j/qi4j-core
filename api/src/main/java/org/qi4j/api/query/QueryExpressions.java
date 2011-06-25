@@ -23,6 +23,7 @@ package org.qi4j.api.query;
 import java.util.Collection;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.entity.association.NamedAssociation;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.query.grammar.AssociationIsNotNullPredicate;
 import org.qi4j.api.query.grammar.AssociationIsNullPredicate;
@@ -40,6 +41,8 @@ import org.qi4j.api.query.grammar.LessThanPredicate;
 import org.qi4j.api.query.grammar.ManyAssociationContainsPredicate;
 import org.qi4j.api.query.grammar.ManyAssociationReference;
 import org.qi4j.api.query.grammar.MatchesPredicate;
+import org.qi4j.api.query.grammar.NamedAssociationContainsPredicate;
+import org.qi4j.api.query.grammar.NamedAssociationReference;
 import org.qi4j.api.query.grammar.Negation;
 import org.qi4j.api.query.grammar.NotEqualsPredicate;
 import org.qi4j.api.query.grammar.OrderBy;
@@ -491,6 +494,13 @@ public final class QueryExpressions
                                                              asTypedValueExpression( value ) );
     }
 
+    public static <T> NamedAssociationContainsPredicate<T> contains( NamedAssociation<T> manyAssoc, T value )
+    {
+        NamedAssociationReference ref = asNamedAssociationExpression( manyAssoc );
+        SingleValueExpression<T> expression = asTypedValueExpression( value );
+        return provider.newNamedAssociationContainsPredicate( ref, expression );
+    }
+
     public static <T, C extends Collection<T>> ContainsAllPredicate<T, C> containsAll( Property<C> property, C value )
     {
         return provider.newContainsAllPredicate( asPropertyExpression( property ), asTypedValueExpression( value ) );
@@ -593,6 +603,29 @@ public final class QueryExpressions
                 "Invalid property. Association used in queries must be a result of using QueryBuilder.templateFor(...)." );
         }
         return (ManyAssociationReference) association;
+    }
+
+    /**
+     * Adapts a {@link NamedAssociation} to a {@link org.qi4j.api.query.grammar.NamedAssociationReference}.
+     *
+     * @param association to be adapted; cannot be null
+     *
+     * @return adapted association expression
+     *
+     * @throws IllegalArgumentException - If association is null or is not an association expression
+     */
+    private static NamedAssociationReference asNamedAssociationExpression( final NamedAssociation<?> association )
+    {
+        if( association == null )
+        {
+            throw new IllegalArgumentException( "NamedAssociation cannot be null" );
+        }
+        if( !( association instanceof NamedAssociationReference ) )
+        {
+            throw new IllegalArgumentException(
+                "Invalid property. Association used in queries must be a result of using QueryBuilder.templateFor(...)." );
+        }
+        return (NamedAssociationReference) association;
     }
 
     /**

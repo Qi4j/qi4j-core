@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
- * Copyright (c) 2007, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2007-2011, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,13 @@ package org.qi4j.api.entity;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.association.AssociationMixin;
 import org.qi4j.api.entity.association.ManyAssociationMixin;
+import org.qi4j.api.entity.association.NamedAssociationMixin;
 import org.qi4j.api.mixin.Mixins;
 
 /**
  * Entity Composites must extend this interface.
  */
-@Mixins( { AssociationMixin.class, ManyAssociationMixin.class } )
+@Mixins( { AssociationMixin.class, ManyAssociationMixin.class, NamedAssociationMixin.class } )
 public interface EntityComposite
     extends Identity, Entity, Composite
 {

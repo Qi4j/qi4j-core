@@ -19,7 +19,6 @@ import org.qi4j.bootstrap.ApplicationAssembler;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.test.AbstractQi4jTest;
 
 /**
  * This abstract test helper is for running the same set of tests but with different Assemblers.

@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2009, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2009, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +24,7 @@ import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.ManyAssociationState;
+import org.qi4j.spi.entity.NamedAssociationState;
 
 /**
  * JAVADOC
@@ -35,6 +37,7 @@ public final class BuilderEntityState
     private final Map<QualifiedName, Object> properties;
     private final Map<QualifiedName, EntityReference> associations;
     private final Map<QualifiedName, ManyAssociationState> manyAssociations;
+    private final Map<QualifiedName, NamedAssociationState> namedAssociations;
 
     public BuilderEntityState( EntityDescriptor type, EntityReference reference )
     {
@@ -43,6 +46,7 @@ public final class BuilderEntityState
         properties = new HashMap<QualifiedName, Object>();
         associations = new HashMap<QualifiedName, EntityReference>();
         manyAssociations = new HashMap<QualifiedName, ManyAssociationState>();
+        namedAssociations = new HashMap<QualifiedName, NamedAssociationState>();
     }
 
     public EntityReference identity()
@@ -108,6 +112,18 @@ public final class BuilderEntityState
             manyAssociations.put( stateName, state );
         }
 
+        return state;
+    }
+
+    @Override
+    public NamedAssociationState getNamedAssociation( QualifiedName stateName )
+    {
+        NamedAssociationState state = namedAssociations.get( stateName );
+        if( state == null )
+        {
+            state = new BuilderNamedAssociationState();
+            namedAssociations.put( stateName, state );
+        }
         return state;
     }
 

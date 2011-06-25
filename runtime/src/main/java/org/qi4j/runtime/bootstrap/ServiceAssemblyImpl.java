@@ -15,14 +15,12 @@
 package org.qi4j.runtime.bootstrap;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.bootstrap.ServiceAssembly;
-import org.qi4j.bootstrap.ServiceDeclaration;
 import org.qi4j.runtime.service.ServiceModel;
 
 /**
@@ -56,13 +54,13 @@ public final class ServiceAssemblyImpl
         return serviceType;
     }
 
-   @Override
-   public String identity()
-   {
-      return identity;
-   }
+    @Override
+    public String identity()
+    {
+        return identity;
+    }
 
-   void addServiceModel( List<ServiceModel> serviceModels, AssemblyHelper helper )
+    void addServiceModel( List<ServiceModel> serviceModels, AssemblyHelper helper )
     {
         try
         {

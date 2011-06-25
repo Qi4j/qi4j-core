@@ -45,6 +45,15 @@ public interface EntityStateHolder
      */
     <T> ManyAssociation<T> getManyAssociation( Method manyassociationMethod );
 
+    /**
+     * Get a named-association for a specific accessor method
+     *
+     * @param namedassociationMethod for the many-association
+     *
+     * @return the association
+     */
+    <T> NamedAssociation<T> getNamedAssociation( Method namedassociationMethod );
+
     <ThrowableType extends Throwable> void visitState( EntityStateVisitor<ThrowableType> visitor )
         throws ThrowableType;
 
@@ -55,6 +64,9 @@ public interface EntityStateHolder
             throws ThrowableType;
 
         void visitManyAssociation( QualifiedName name, ManyAssociation association )
+            throws ThrowableType;
+
+        void visitNamedAssociation( QualifiedName name, NamedAssociation association )
             throws ThrowableType;
     }
 }

@@ -28,7 +28,11 @@ public interface EntityStateDescriptor
 
     AssociationDescriptor getManyAssociationByName( String name );
 
+    AssociationDescriptor getNamedAssociationByName( String name );
+
     <T extends AssociationDescriptor> Set<T> associations();
 
     <T extends AssociationDescriptor> Set<T> manyAssociations();
+
+    <T extends AssociationDescriptor> Set<T> namedAssociations();
 }

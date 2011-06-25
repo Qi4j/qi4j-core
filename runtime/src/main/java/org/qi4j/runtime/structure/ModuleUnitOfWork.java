@@ -66,7 +66,7 @@ public class ModuleUnitOfWork
     private UnitOfWorkInstance uow;
     private ModuleInstance moduleInstance;
 
-    ModuleUnitOfWork( ModuleInstance moduleInstance, UnitOfWorkInstance uow)
+    ModuleUnitOfWork( ModuleInstance moduleInstance, UnitOfWorkInstance uow )
     {
         this.moduleInstance = moduleInstance;
         this.uow = uow;
@@ -182,7 +182,7 @@ public class ModuleUnitOfWork
             IdentityGenerator idGen = entityModuleInstance.entities().identityGenerator();
             if( idGen == null )
             {
-                throw new NoSuchCompositeException(IdentityGenerator.class.getName(), entityModuleInstance.name() );
+                throw new NoSuchCompositeException( IdentityGenerator.class.getName(), entityModuleInstance.name() );
             }
             identity = idGen.generate( entityModel.type() );
         }

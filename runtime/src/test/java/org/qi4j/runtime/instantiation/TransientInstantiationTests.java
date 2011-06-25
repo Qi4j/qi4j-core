@@ -24,7 +24,7 @@ import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.core.testsupport.AbstractQi4jTest;
 
 public class TransientInstantiationTests
     extends AbstractQi4jTest

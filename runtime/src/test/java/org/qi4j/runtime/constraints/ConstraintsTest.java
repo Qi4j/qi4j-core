@@ -33,7 +33,7 @@ import org.qi4j.api.constraint.Name;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.core.testsupport.AbstractQi4jTest;
 
 import static java.lang.annotation.RetentionPolicy.*;
 import static org.junit.Assert.*;

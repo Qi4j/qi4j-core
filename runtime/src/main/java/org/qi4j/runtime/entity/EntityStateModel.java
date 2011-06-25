@@ -20,12 +20,15 @@ import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.EntityStateHolder;
 import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.entity.association.NamedAssociation;
 import org.qi4j.api.property.Property;
 import org.qi4j.runtime.composite.AbstractStateModel;
 import org.qi4j.runtime.entity.association.EntityAssociationsInstance;
 import org.qi4j.runtime.entity.association.EntityAssociationsModel;
 import org.qi4j.runtime.entity.association.EntityManyAssociationsInstance;
 import org.qi4j.runtime.entity.association.EntityManyAssociationsModel;
+import org.qi4j.runtime.entity.association.EntityNamedAssociationsInstance;
+import org.qi4j.runtime.entity.association.EntityNamedAssociationsModel;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStateDescriptor;
@@ -41,23 +44,27 @@ public final class EntityStateModel
     implements EntityStateDescriptor
 {
     private final EntityAssociationsModel associationsModel;
-    private EntityManyAssociationsModel manyAssociationsModel;
+    private final EntityManyAssociationsModel manyAssociationsModel;
+    private final EntityNamedAssociationsModel namedAssociationsModel;
 
     public EntityStateModel( EntityPropertiesModel propertiesModel,
                              EntityAssociationsModel associationsModel,
-                             EntityManyAssociationsModel manyAssociationsModel
+                             EntityManyAssociationsModel manyAssociationsModel,
+                             EntityNamedAssociationsModel namedAssociationsModel
     )
     {
         super( propertiesModel );
         this.associationsModel = associationsModel;
         this.manyAssociationsModel = manyAssociationsModel;
+        this.namedAssociationsModel = namedAssociationsModel;
     }
 
     public EntityStateModel.EntityStateInstance newInstance( ModuleUnitOfWork uow, EntityState entityState )
     {
         return new EntityStateInstance( propertiesModel.newInstance( entityState ),
                                         associationsModel.newInstance( entityState, uow ),
-                                        manyAssociationsModel.newInstance( entityState, uow ) );
+                                        manyAssociationsModel.newInstance( entityState, uow ),
+                                        namedAssociationsModel.newInstance( entityState, uow ) );
     }
 
     @Override
@@ -72,6 +79,10 @@ public final class EntityStateModel
         {
             manyAssociationsModel.addManyAssociationFor( method );
         }
+        for( Method method : methods )
+        {
+            namedAssociationsModel.addNamedAssociationFor( method );
+        }
     }
 
     public AssociationDescriptor getAssociationByName( String name )
@@ -84,6 +95,12 @@ public final class EntityStateModel
         return manyAssociationsModel.getManyAssociationByName( name );
     }
 
+    @Override
+    public AssociationDescriptor getNamedAssociationByName( String name )
+    {
+        return namedAssociationsModel.getNamedAssociationByName( name );
+    }
+
     public <T extends AssociationDescriptor> Set<T> associations()
     {
         return associationsModel.associations();
@@ -92,6 +109,12 @@ public final class EntityStateModel
     public <T extends AssociationDescriptor> Set<T> manyAssociations()
     {
         return manyAssociationsModel.manyAssociations();
+    }
+
+    @Override
+    public <T extends AssociationDescriptor> Set<T> namedAssociations()
+    {
+        return namedAssociationsModel.namedAssociations();
     }
 
     public Set<PropertyType> propertyTypes()
@@ -109,22 +132,30 @@ public final class EntityStateModel
         return manyAssociationsModel.manyAssociationTypes();
     }
 
+    public Set<AssociationType> namedAssociationTypes()
+    {
+        return namedAssociationsModel.namedAssociationTypes();
+    }
+
     public final class EntityStateInstance
         implements EntityStateHolder
     {
         private final EntityPropertiesInstance entityPropertiesInstance;
         private final EntityAssociationsInstance entityAssociationsInstance;
         private final EntityManyAssociationsInstance entityManyAssociationsInstance;
+        private final EntityNamedAssociationsInstance entityNamedAssociationsInstance;
 
         private EntityStateInstance(
             EntityPropertiesInstance entityPropertiesInstance,
             EntityAssociationsInstance entityAssociationsInstance,
-            EntityManyAssociationsInstance entityManyAssociationsInstance
+            EntityManyAssociationsInstance entityManyAssociationsInstance,
+            EntityNamedAssociationsInstance entityNamedAssociationsInstance
         )
         {
             this.entityPropertiesInstance = entityPropertiesInstance;
             this.entityAssociationsInstance = entityAssociationsInstance;
             this.entityManyAssociationsInstance = entityManyAssociationsInstance;
+            this.entityNamedAssociationsInstance = entityNamedAssociationsInstance;
         }
 
         public <T> Property<T> getProperty( Method accessor )
@@ -145,6 +176,12 @@ public final class EntityStateModel
         public <T> ManyAssociation<T> getManyAssociation( Method accessor )
         {
             return entityManyAssociationsInstance.manyAssociationFor( accessor );
+        }
+
+        @Override
+        public <T> NamedAssociation<T> getNamedAssociation( Method accessor )
+        {
+            return entityNamedAssociationsInstance.namedAssociationFor( accessor );
         }
 
         public <ThrowableType extends Throwable> void visitState( EntityStateVisitor<ThrowableType> visitor )

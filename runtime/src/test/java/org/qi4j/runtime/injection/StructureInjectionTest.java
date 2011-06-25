@@ -26,8 +26,8 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.core.testsupport.AbstractQi4jTest;
 import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.test.AbstractQi4jTest;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;

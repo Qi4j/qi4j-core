@@ -27,7 +27,7 @@ import org.qi4j.spi.util.MethodKeyMap;
  * Declaration of a Property or Association.
  */
 public final class MetaInfoDeclaration
-    implements PropertyDeclarations, AssociationDeclarations, ManyAssociationDeclarations
+    implements PropertyDeclarations, AssociationDeclarations, ManyAssociationDeclarations, NamedAssociationDeclarations
 {
     Map<Class<?>, InfoHolder<?>> mixinPropertyDeclarations = new HashMap<Class<?>, InfoHolder<?>>();
 

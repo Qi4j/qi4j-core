@@ -17,15 +17,10 @@ package org.qi4j.runtime.bootstrap;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.api.common.InvalidApplicationException;
-import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.service.qualifier.ServiceTags;
 import org.qi4j.bootstrap.ImportedServiceDeclaration;
-import org.qi4j.bootstrap.ServiceDeclaration;
-import org.qi4j.runtime.service.ImportedServiceModel;
-import org.qi4j.spi.service.importer.InstanceImporter;
 
 /**
  * Declaration of an imported Service.
@@ -35,7 +30,7 @@ public final class ImportedServiceDeclarationImpl
 {
     private Iterable<ImportedServiceAssemblyImpl> assemblies;
 
-    public ImportedServiceDeclarationImpl( Iterable<ImportedServiceAssemblyImpl> assemblies)
+    public ImportedServiceDeclarationImpl( Iterable<ImportedServiceAssemblyImpl> assemblies )
     {
         this.assemblies = assemblies;
     }
@@ -72,7 +67,7 @@ public final class ImportedServiceDeclarationImpl
         for( ImportedServiceAssemblyImpl serviceAssembly : assemblies )
         {
             ServiceTags previousTags = serviceAssembly.metaInfo.get( ServiceTags.class );
-            if (previousTags != null)
+            if( previousTags != null )
             {
                 List<String> tagList = new ArrayList<String>();
                 for( String tag : previousTags.tags() )
@@ -83,10 +78,11 @@ public final class ImportedServiceDeclarationImpl
                 {
                     tagList.add( tag );
                 }
-                serviceAssembly.metaInfo.set( new ServiceTags( tagList.toArray( new String[tagList.size()] )) );
-            } else
+                serviceAssembly.metaInfo.set( new ServiceTags( tagList.toArray( new String[ tagList.size() ] ) ) );
+            }
+            else
             {
-                serviceAssembly.metaInfo.set( new ServiceTags(tags) );
+                serviceAssembly.metaInfo.set( new ServiceTags( tags ) );
             }
         }
 

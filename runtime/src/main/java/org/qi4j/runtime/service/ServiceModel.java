@@ -14,6 +14,15 @@
 
 package org.qi4j.runtime.service;
 
+import java.io.Serializable;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Proxy;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.common.Visibility;
@@ -21,14 +30,26 @@ import org.qi4j.api.composite.Composite;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.property.*;
+import org.qi4j.api.property.ComputedPropertyInstance;
+import org.qi4j.api.property.GenericPropertyInfo;
+import org.qi4j.api.property.Immutable;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.util.Classes;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.bootstrap.MetaInfoDeclaration;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.bootstrap.AssemblyHelper;
-import org.qi4j.runtime.composite.*;
+import org.qi4j.runtime.composite.AbstractCompositeModel;
+import org.qi4j.runtime.composite.CompositeMethodsModel;
+import org.qi4j.runtime.composite.ConcernDeclaration;
+import org.qi4j.runtime.composite.ConcernsDeclaration;
+import org.qi4j.runtime.composite.ConstraintsModel;
+import org.qi4j.runtime.composite.MixinsModel;
+import org.qi4j.runtime.composite.SideEffectsDeclaration;
+import org.qi4j.runtime.composite.StateModel;
+import org.qi4j.runtime.composite.UsesInstance;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.property.PropertiesModel;
@@ -39,18 +60,12 @@ import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.spi.service.ServiceDescriptor;
 
-import java.io.Serializable;
-import java.lang.reflect.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 /**
  * JAVADOC
  */
 public final class ServiceModel
-        extends AbstractCompositeModel
-        implements ServiceDescriptor, Serializable
+    extends AbstractCompositeModel
+    implements ServiceDescriptor, Serializable
 {
     public static ServiceModel newModel( final Class<? extends ServiceComposite> compositeType,
                                          final Visibility visibility,
@@ -78,11 +93,11 @@ public final class ServiceModel
         ConcernsDeclaration concernsModel = new ConcernsDeclaration( concerns );
         SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( compositeType, sideEffects );
         CompositeMethodsModel compositeMethodsModel =
-                new CompositeMethodsModel( compositeType, constraintsModel, concernsModel, sideEffectsModel, mixinsModel, helper );
+            new CompositeMethodsModel( compositeType, constraintsModel, concernsModel, sideEffectsModel, mixinsModel, helper );
         stateModel.addStateFor( compositeMethodsModel.methods(), compositeType );
 
         return new ServiceModel(
-                compositeType, roles, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel, moduleName, identity, instantiateOnStartup );
+            compositeType, roles, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel, moduleName, identity, instantiateOnStartup );
     }
 
     private final String identity;
@@ -133,7 +148,7 @@ public final class ServiceModel
     }
 
     public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
-            throws ThrowableType
+        throws ThrowableType
     {
         modelVisitor.visit( this );
 
@@ -144,7 +159,7 @@ public final class ServiceModel
     // Binding
 
     public void bind( Resolution resolution )
-            throws BindingException
+        throws BindingException
     {
         resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), this, null, null );
         compositeMethodsModel.bind( resolution );
@@ -165,7 +180,8 @@ public final class ServiceModel
             // Plain class check
             Class serviceClass = (Class) serviceType;
             return serviceClass.isAssignableFrom( type() );
-        } else if( serviceType instanceof ParameterizedType )
+        }
+        else if( serviceType instanceof ParameterizedType )
         {
             // Parameterized type check. This is useful for example Wrapper<Foo> usages
             ParameterizedType paramType = (ParameterizedType) serviceType;
@@ -177,14 +193,14 @@ public final class ServiceModel
                 {
                     // Check params
                     Type[] actualTypes = paramType.getActualTypeArguments();
-                    Type[] actualServiceTypes = ((ParameterizedType) type1).getActualTypeArguments();
+                    Type[] actualServiceTypes = ( (ParameterizedType) type1 ).getActualTypeArguments();
                     for( int i = 0; i < actualTypes.length; i++ )
                     {
-                        Type actualType = actualTypes[i];
+                        Type actualType = actualTypes[ i ];
                         if( actualType instanceof Class )
                         {
                             Class actualClass = (Class) actualType;
-                            Class actualServiceType = (Class) actualServiceTypes[i];
+                            Class actualServiceType = (Class) actualServiceTypes[ i ];
                             if( !actualClass.isAssignableFrom( actualServiceType ) )
                             {
                                 return false;
@@ -210,12 +226,13 @@ public final class ServiceModel
             public <T> Property<T> getProperty( final Method propertyMethod )
             {
                 if( QualifiedName.fromMethod( propertyMethod )
-                        .equals( QualifiedName.fromClass( Identity.class, "identity" ) ) )
+                    .equals( QualifiedName.fromClass( Identity.class, "identity" ) ) )
                 {
                     PropertyModel propertyDescriptor = (PropertyModel) stateModel.getPropertyByQualifiedName( QualifiedName
-                            .fromMethod( propertyMethod ) );
+                                                                                                                  .fromMethod( propertyMethod ) );
                     return propertyDescriptor.newInstance( identity );
-                } else
+                }
+                else
                 {
                     // State is set to defaults
                     return new ComputedPropertyInstance<T>( new GenericPropertyInfo( propertyMethod ) )
@@ -250,11 +267,12 @@ public final class ServiceModel
         try
         {
             // Instantiate all mixins
-            ((MixinsModel) mixinsModel).newMixins( compositeInstance,
-                    UsesInstance.EMPTY_USES.use( this ),
-                    stateHolder,
-                    mixins );
-        } catch( InvalidCompositeException e )
+            ( (MixinsModel) mixinsModel ).newMixins( compositeInstance,
+                                                     UsesInstance.EMPTY_USES.use( this ),
+                                                     stateHolder,
+                                                     mixins );
+        }
+        catch( InvalidCompositeException e )
         {
             e.setFailingCompositeType( type() );
             e.setMessage( "Invalid Cyclic Mixin usage dependency" );
@@ -269,14 +287,15 @@ public final class ServiceModel
         if( type().isInterface() )
         {
             return Composite.class.cast( Proxy.newProxyInstance( type().getClassLoader(),
-                    new Class[]{type()},
-                    serviceInvocationHandler ) );
-        } else
+                                                                 new Class[]{ type() },
+                                                                 serviceInvocationHandler ) );
+        }
+        else
         {
             Class[] interfaces = type().getInterfaces();
             return Composite.class.cast( Proxy.newProxyInstance( type().getClassLoader(),
-                    interfaces,
-                    serviceInvocationHandler ) );
+                                                                 interfaces,
+                                                                 serviceInvocationHandler ) );
         }
     }
 
@@ -306,7 +325,8 @@ public final class ServiceModel
                 if( injectionClass == null )
                 {
                     injectionClass = dependencyModel.injectionClass();
-                } else
+                }
+                else
                 {
                     if( injectionClass.isAssignableFrom( dependencyModel.injectionClass() ) )
                     {
@@ -319,13 +339,13 @@ public final class ServiceModel
     }
 
     public void activate( Object[] mixins )
-            throws Exception
+        throws Exception
     {
         mixinsModel.activate( mixins );
     }
 
     public void passivate( Object[] mixins )
-            throws Exception
+        throws Exception
     {
         mixinsModel.passivate( mixins );
     }
