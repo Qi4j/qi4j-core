@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static java.util.Arrays.*;
+import static java.util.Arrays.asList;
 
 /**
  * Class-related utility methods
@@ -223,8 +223,8 @@ public final class Classes
         }
     }
 
-    public static <AnnotationType extends Annotation> AnnotationType getAnnotationOfTypeOrAnyOfSuperTypes( Class<?> type,
-                                                                                                           Class<AnnotationType> annotationClass
+    public static <AnnotationType extends Annotation> AnnotationType getAnnotationOfTypeOrAnyOfSuperTypes(
+        Class<?> type, Class<AnnotationType> annotationClass
     )
     {
         AnnotationType result = null;
@@ -261,7 +261,8 @@ public final class Classes
         }
         else if( genericType instanceof GenericArrayType )
         {
-            Object temp = Array.newInstance( (Class<?>) ( (GenericArrayType) genericType ).getGenericComponentType(), 0 );
+            GenericArrayType genericArrayType = (GenericArrayType) genericType;
+            Object temp = Array.newInstance( (Class<?>) genericArrayType.getGenericComponentType(), 0 );
             return temp.getClass();
         }
         throw new IllegalArgumentException( "Could not extract the raw class of " + genericType );

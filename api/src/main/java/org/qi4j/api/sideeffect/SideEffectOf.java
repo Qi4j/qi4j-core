@@ -30,7 +30,6 @@ import org.qi4j.api.sideeffect.internal.SideEffectFor;
  */
 public abstract class SideEffectOf<T>
 {
-    final
     @SideEffectFor
-    protected T result = null;
+    final protected T result = null;
 }

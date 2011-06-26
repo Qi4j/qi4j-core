@@ -69,7 +69,8 @@ public interface NamedAssociation<T>
      */
     String contains( T entity );
 
-    /** Returns the names in this set of association.
+    /**
+     * Returns the names in this set of association.
      *
      * @return The names of the associations that has been entered already.
      */

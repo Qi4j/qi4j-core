@@ -19,8 +19,11 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import org.qi4j.api.specification.Specification;
 
-import static org.qi4j.api.util.Classes.*;
-import static org.qi4j.api.util.Iterables.*;
+import static org.qi4j.api.util.Classes.interfacesOf;
+import static org.qi4j.api.util.Iterables.flatten;
+import static org.qi4j.api.util.Iterables.flattenIterables;
+import static org.qi4j.api.util.Iterables.iterable;
+import static org.qi4j.api.util.Iterables.map;
 
 /**
  * Useful methods for handling Annotations.
@@ -60,13 +63,14 @@ public final class Annotations
 
     public static Iterable<Annotation> getMethodAndTypeAnnotations( Method method )
     {
-        return flatten( iterable( method.getAnnotations() ),
-                        flattenIterables( map( new Function<Class, Iterable<Annotation>>()
-                        {
-                            public Iterable<Annotation> map( Class aClass )
-                            {
-                                return iterable( aClass.getAnnotations() );
-                            }
-                        }, interfacesOf( method.getReturnType() ) ) ) );
+        Iterable<Annotation> iterable = iterable( method.getAnnotations() );
+        return flatten( iterable, flattenIterables( map(
+            new Function<Class, Iterable<Annotation>>()
+            {
+                public Iterable<Annotation> map( Class aClass )
+                {
+                    return iterable( aClass.getAnnotations() );
+                }
+            }, interfacesOf( method.getReturnType() ) ) ) );
     }
 }

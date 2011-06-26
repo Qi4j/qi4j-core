@@ -1,10 +1,9 @@
 package org.qi4j.api.util;
 
-import org.qi4j.api.specification.Specification;
-
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import org.qi4j.api.specification.Specification;
 
 import static org.qi4j.api.specification.Specifications.in;
 import static org.qi4j.api.specification.Specifications.not;
@@ -55,9 +54,10 @@ public class Functions
      *
      * @param specification
      * @param <T>
+     *
      * @return
      */
-    public static <T> Function<T, Integer> count( final Specification<T> specification)
+    public static <T> Function<T, Integer> count( final Specification<T> specification )
     {
         return new Function<T, Integer>()
         {
@@ -66,8 +66,10 @@ public class Functions
             @Override
             public Integer map( T item )
             {
-                if (specification.satisfiedBy( item ))
+                if( specification.satisfiedBy( item ) )
+                {
                     count++;
+                }
 
                 return count;
             }
@@ -80,9 +82,10 @@ public class Functions
      *
      * @param specification
      * @param <T>
+     *
      * @return
      */
-    public static <T> Function<T, Integer> indexOf( final Specification<T> specification)
+    public static <T> Function<T, Integer> indexOf( final Specification<T> specification )
     {
         return new Function<T, Integer>()
         {
@@ -92,8 +95,10 @@ public class Functions
             @Override
             public Integer map( T item )
             {
-                if (index == -1 && specification.satisfiedBy( item ))
+                if( index == -1 && specification.satisfiedBy( item ) )
+                {
                     index = current;
+                }
 
                 current++;
 
@@ -108,9 +113,10 @@ public class Functions
      * @param item
      * @param iterable
      * @param <T>
+     *
      * @return
      */
-    public static <T> int indexOf(T item, Iterable<T> iterable)
+    public static <T> int indexOf( T item, Iterable<T> iterable )
     {
         return first( filter( not( in( -1 ) ), map( indexOf( in( item ) ), iterable ) ) );
     }
@@ -124,9 +130,10 @@ public class Functions
      *
      * @param comparableFunction
      * @param <T>
+     *
      * @return
      */
-    public static <T> Comparator<T> comparator( final Function<T, Comparable> comparableFunction)
+    public static <T> Comparator<T> comparator( final Function<T, Comparable> comparableFunction )
     {
         return new Comparator<T>()
         {
@@ -135,17 +142,17 @@ public class Functions
             public int compare( T o1, T o2 )
             {
                 Comparable key1 = compareKeys.get( o1 );
-                if (key1 == null)
+                if( key1 == null )
                 {
                     key1 = comparableFunction.map( o1 );
-                    compareKeys.put(o1, key1);
+                    compareKeys.put( o1, key1 );
                 }
 
                 Comparable key2 = compareKeys.get( o2 );
-                if (key2 == null)
+                if( key2 == null )
                 {
                     key2 = comparableFunction.map( o2 );
-                    compareKeys.put(o2, key2);
+                    compareKeys.put( o2, key2 );
                 }
 
                 return key1.compareTo( key2 );

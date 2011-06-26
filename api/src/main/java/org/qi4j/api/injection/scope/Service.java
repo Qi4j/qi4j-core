@@ -39,4 +39,3 @@ import org.qi4j.api.injection.InjectionScope;
 public @interface Service
 {
 }
-

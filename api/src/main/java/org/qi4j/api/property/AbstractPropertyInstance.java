@@ -22,7 +22,7 @@ package org.qi4j.api.property;
 import java.lang.reflect.Type;
 import org.qi4j.api.common.QualifiedName;
 
-import static org.qi4j.api.util.NullArgumentException.*;
+import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 
 /**
  * {@code AbstractPropertyInstance} is the base implementation of {@link org.qi4j.api.property.Property}.

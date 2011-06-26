@@ -15,7 +15,8 @@ package org.qi4j.api.common;
 import java.lang.annotation.Annotation;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Tests public api exposed by AppliesTo annotation.
