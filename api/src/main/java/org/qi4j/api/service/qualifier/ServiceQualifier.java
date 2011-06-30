@@ -22,10 +22,16 @@ import org.qi4j.api.specification.Specification;
  * from a list. Provide a Selector which does the actual
  * selection from the list. A common case is to select
  * based on identity of the service, which you can do this way:
+ * <code><pre>
+ *
  * new ServiceQualifier<MyService>(services, ServiceQualifier.withId("someId"))
+ * </pre></code>
  *
  * Many selectors can be combined by using firstOf. Example:
+ * <code><pre>
+ *
  * new ServiceQualifier<MyService>(services, firstOf(withTags("sometag"), firstActive(), first()))
+ * </pre></code>
  * This will pick a service that has the tag "sometag", or if none is found take the first active one. If no
  * service is active, then the first service will be picked.
  */
