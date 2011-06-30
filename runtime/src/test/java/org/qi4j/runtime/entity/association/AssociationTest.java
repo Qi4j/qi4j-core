@@ -95,14 +95,7 @@ public class AssociationTest
             assertEquals( "Niclas", company.roles().get( "CTO" ).name().get() );
             assertEquals( "Rickard", company.roles().get( "CEO" ).name().get() );
             assertEquals( "Peter", company.roles().get( "COO" ).name().get() );
-            try
-            {
-                company.roles().get( "CFO" ).name().get();
-                fail( "Looked up an non-existent NamedAsssociaion.");
-            } catch( NoSuchEntityException e )
-            {
-                // expected
-            }
+            assertNull( "Looked up an non-existent NamedAsssociaion.", company.roles().get( "CFO" ) );
         }
         finally
         {
