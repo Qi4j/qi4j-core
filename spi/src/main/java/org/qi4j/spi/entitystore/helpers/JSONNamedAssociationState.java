@@ -95,8 +95,8 @@ public final class JSONNamedAssociationState
 
     public EntityReference get( String name )
     {
-        String identity = references.optString( name );
-        if( identity == null )
+        String identity = references.optString( name ).trim();
+        if( identity == null || identity.length() == 0 )
         {
             return null;
         }
