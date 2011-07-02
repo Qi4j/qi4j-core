@@ -91,11 +91,14 @@ public final class ServiceReferenceInstance<T>
     public void passivate()
         throws Exception
     {
-        if( instance != null )
+        synchronized( this )
         {
-            LoggerFactory.getLogger( getClass() ).debug( "Passivating service " + serviceModel.identity() );
-            activator.passivate();
-            instance = null;
+            if( instance != null )
+            {
+                LoggerFactory.getLogger( getClass() ).debug( "Passivating service " + serviceModel.identity() );
+                activator.passivate();
+                instance = null;
+            }
         }
     }
 
@@ -110,17 +113,17 @@ public final class ServiceReferenceInstance<T>
                 if( instance == null )
                 {
                     LoggerFactory.getLogger( getClass() ).debug( "Activating service " + serviceModel.identity() );
-                    instance = serviceModel.newInstance( module );
-
+                    ServiceInstance newInstance = serviceModel.newInstance( module );
                     try
                     {
-                        activator.activate( instance );
+                        activator.activate( newInstance );
                     }
                     catch( Exception e )
                     {
                         instance = null;
                         throw new ServiceUnavailableException( "Could not activate service " + serviceModel.identity(), e );
                     }
+                    instance = newInstance;
                 }
             }
         }
