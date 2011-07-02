@@ -120,7 +120,7 @@ public class ValueTypeFactory
                 typeMap.put( type, valueType );
 
                 addProperties( typeMap, valueTypeClass, compositeType, types );
-
+                // The Properties of Private Mixins are missed here, since we don't leverage StateModel. QI-328
                 Collections.sort( types ); // Sort by property name
             }
         }
