@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import org.qi4j.api.composite.Composite;
+import org.qi4j.api.mixin.Initializable;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.AbstractCompositeDescriptor;
@@ -107,6 +108,17 @@ public class TransientInstance
     public StateHolder state()
     {
         return state;
+    }
+
+    public void initializeMixins()
+    {
+        for( Object mixin : mixins )
+        {
+            if( mixin instanceof Initializable )
+            {
+                ( (Initializable) mixin ).initialize();
+            }
+        }
     }
 
     public Object invoke( Object composite, Object[] params, CompositeMethodInstance methodInstance )

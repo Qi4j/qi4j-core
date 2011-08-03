@@ -41,11 +41,16 @@ public final class ValueMixinsModel
 
     public void newMixins( ValueInstance compositeInstance, StateHolder state, Object[] mixins )
     {
+        newMixins( compositeInstance, state, mixins, true );
+    }
+
+    public void newMixins( ValueInstance compositeInstance, StateHolder state, Object[] mixins, boolean initialize )
+    {
         int i = 0;
         InjectionContext injectionContext = new InjectionContext( compositeInstance, UsesInstance.EMPTY_USES, state );
         for( MixinModel mixinModel : mixinModels )
         {
-            mixins[ i++ ] = mixinModel.newInstance( injectionContext );
+            mixins[ i++ ] = mixinModel.newInstance( injectionContext, initialize );
         }
     }
 }
