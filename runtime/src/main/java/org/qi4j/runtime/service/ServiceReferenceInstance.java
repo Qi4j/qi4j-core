@@ -45,7 +45,6 @@ public final class ServiceReferenceInstance<T>
     {
         this.module = module;
         this.serviceModel = serviceModel;
-
         serviceProxy = newProxy();
     }
 
@@ -179,6 +178,11 @@ public final class ServiceReferenceInstance<T>
             }
 
 */
+            if( instance == null )
+            {
+                throw new ServiceUnavailableException( "Service is currently not available" );
+            }
+
             return instance.invoke( object, method, objects );
         }
 
