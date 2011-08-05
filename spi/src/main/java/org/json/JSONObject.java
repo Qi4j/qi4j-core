@@ -99,6 +99,7 @@ import java.util.TreeSet;
  * </ul>
  */
 public final class JSONObject
+    implements Iterable<String>
 {
 
     /**
@@ -853,6 +854,12 @@ public final class JSONObject
      * @return An iterator of the keys.
      */
     public Iterator keys()
+    {
+        return this.map.keySet().iterator();
+    }
+
+    @Override
+    public Iterator<String> iterator()
     {
         return this.map.keySet().iterator();
     }

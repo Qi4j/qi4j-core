@@ -28,7 +28,7 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.sideeffect.SideEffects;
 import org.qi4j.api.util.Classes;
 
-import static java.util.Arrays.*;
+import static java.util.Arrays.asList;
 
 /**
  * Used to declare and access meta-info.
@@ -136,7 +136,7 @@ public final class MetaInfo
         for( Annotation annotation : annotatedElement.getAnnotations() )
         {
             if( !ignored.contains( annotation.annotationType() )
-                && get(annotation.annotationType()) == null )
+                && get( annotation.annotationType() ) == null )
             {
                 set( annotation );
             }

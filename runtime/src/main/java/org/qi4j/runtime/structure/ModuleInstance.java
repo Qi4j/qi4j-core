@@ -46,9 +46,9 @@ import org.qi4j.api.util.NullArgumentException;
 import org.qi4j.api.value.NoSuchValueException;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
-import org.qi4j.runtime.composite.TransientsModel;
 import org.qi4j.runtime.composite.TransientBuilderInstance;
 import org.qi4j.runtime.composite.TransientModel;
+import org.qi4j.runtime.composite.TransientsModel;
 import org.qi4j.runtime.composite.UsesInstance;
 import org.qi4j.runtime.entity.EntitiesInstance;
 import org.qi4j.runtime.entity.EntitiesModel;
@@ -606,7 +606,7 @@ public class ModuleInstance
         @Override
         public UnitOfWork newUnitOfWork( Usecase usecase, long currentTime )
         {
-            return new ModuleUnitOfWork( ModuleInstance.this, new UnitOfWorkInstance( usecase, currentTime ));
+            return new ModuleUnitOfWork( ModuleInstance.this, new UnitOfWorkInstance( usecase, currentTime ) );
         }
 
         public UnitOfWork currentUnitOfWork()

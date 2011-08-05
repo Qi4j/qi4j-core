@@ -28,6 +28,7 @@ import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.ManyAssociationState;
+import org.qi4j.spi.entity.NamedAssociationState;
 import org.qi4j.spi.entitystore.DefaultEntityStoreUnitOfWork;
 
 /**
@@ -48,6 +49,7 @@ public final class DefaultEntityState
     protected final Map<QualifiedName, Object> properties;
     protected final Map<QualifiedName, EntityReference> associations;
     protected final Map<QualifiedName, List<EntityReference>> manyAssociations;
+    protected final Map<QualifiedName, Map<String,EntityReference>> namedAssociations;
 
     public DefaultEntityState( DefaultEntityStoreUnitOfWork unitOfWork,
                                EntityReference identity,
@@ -61,7 +63,9 @@ public final class DefaultEntityState
               entityDescriptor,
               new HashMap<QualifiedName, Object>(),
               new HashMap<QualifiedName, EntityReference>(),
-              new HashMap<QualifiedName, List<EntityReference>>() );
+              new HashMap<QualifiedName, List<EntityReference>>(),
+              new HashMap<QualifiedName, Map<String,EntityReference>>()
+              );
     }
 
     public DefaultEntityState( DefaultEntityStoreUnitOfWork unitOfWork,
@@ -72,7 +76,8 @@ public final class DefaultEntityState
                                EntityDescriptor entityDescriptor,
                                Map<QualifiedName, Object> properties,
                                Map<QualifiedName, EntityReference> associations,
-                               Map<QualifiedName, List<EntityReference>> manyAssociations
+                               Map<QualifiedName, List<EntityReference>> manyAssociations,
+                               Map<QualifiedName, Map<String,EntityReference>> namedAssociations
     )
     {
         this.unitOfWork = unitOfWork;
@@ -84,6 +89,7 @@ public final class DefaultEntityState
         this.properties = properties;
         this.associations = associations;
         this.manyAssociations = manyAssociations;
+        this.namedAssociations = namedAssociations;
     }
 
     // EntityState implementation
@@ -134,6 +140,18 @@ public final class DefaultEntityState
             manyAssociations.put( stateName, manyAssociationState );
         }
         return new DefaultManyAssociationState( this, manyAssociationState );
+    }
+
+    @Override
+    public NamedAssociationState getNamedAssociation( QualifiedName stateName )
+    {
+        Map<String,EntityReference> namedAssociationState = namedAssociations.get( stateName );
+        if( namedAssociationState == null )
+        {
+            namedAssociationState = new HashMap<String, EntityReference>(  );
+            namedAssociations.put( stateName, namedAssociationState );
+        }
+        return new DefaultNamedAssociationState( this, namedAssociationState );
     }
 
     public void copyTo( DefaultEntityState entityState )
@@ -197,6 +215,11 @@ public final class DefaultEntityState
     public Map<QualifiedName, List<EntityReference>> manyAssociations()
     {
         return manyAssociations;
+    }
+
+    public Map<QualifiedName, Map<String,EntityReference>> namedAssociations()
+    {
+        return namedAssociations;
     }
 
     @Override

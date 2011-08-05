@@ -124,9 +124,12 @@ public final class ValueModel
         stateModel.checkConstraints( state );
     }
 
-    public ValueInstance newValueInstance( ModuleInstance moduleInstance,
-                                           StateHolder state
-    )
+    public ValueInstance newValueInstance( ModuleInstance moduleInstance, StateHolder state )
+    {
+        return newValueInstance( moduleInstance, state, true );
+    }
+
+    public ValueInstance newValueInstance( ModuleInstance moduleInstance, StateHolder state, boolean initialize )
     {
         Object[] mixins = mixinsModel.newMixinHolder();
 
@@ -135,9 +138,8 @@ public final class ValueModel
         try
         {
             // Instantiate all mixins
-            ( (ValueMixinsModel) mixinsModel ).newMixins( instance,
-                                                          state,
-                                                          mixins );
+            ValueMixinsModel valueMixinsModel = (ValueMixinsModel) mixinsModel;
+            valueMixinsModel.newMixins( instance, state, mixins, initialize );
         }
         catch( InvalidCompositeException e )
         {

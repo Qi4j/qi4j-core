@@ -21,7 +21,7 @@ import org.qi4j.api.entity.association.EntityStateHolder;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
+import org.qi4j.spi.entity.association.AssociationDescriptor;
 
 /**
  * Collection of Property instances.
@@ -69,7 +69,7 @@ public final class EntityManyAssociationsInstance
     public <ThrowableType extends Throwable> void visitManyAssociations( EntityStateHolder.EntityStateVisitor<ThrowableType> visitor )
         throws ThrowableType
     {
-        for( ManyAssociationDescriptor manyAssociationDescriptor : model.manyAssociations() )
+        for( AssociationDescriptor manyAssociationDescriptor : model.manyAssociations() )
         {
             visitor.visitManyAssociation( manyAssociationDescriptor.qualifiedName(), manyAssociationFor( manyAssociationDescriptor
                                                                                                              .accessor() ) );

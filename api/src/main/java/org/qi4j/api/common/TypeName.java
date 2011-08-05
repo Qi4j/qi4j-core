@@ -84,4 +84,3 @@ public final class TypeName
         return this.name.compareTo( typeName.name );
     }
 }
-

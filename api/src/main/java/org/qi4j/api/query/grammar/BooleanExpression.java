@@ -25,7 +25,7 @@ package org.qi4j.api.query.grammar;
 public interface BooleanExpression
 {
     /**
-     * Evaluates the boolean expression agains a target object (composite?)
+     * Evaluates the boolean expression against a target object (composite?)
      *
      * @param target target object
      *

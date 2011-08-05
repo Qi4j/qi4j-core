@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2011, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,6 +37,7 @@ import org.qi4j.api.util.Classes;
 import org.qi4j.bootstrap.AssociationDeclarations;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.bootstrap.ManyAssociationDeclarations;
+import org.qi4j.bootstrap.NamedAssociationDeclarations;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.bootstrap.AssemblyHelper;
 import org.qi4j.runtime.composite.AbstractCompositeModel;
@@ -45,6 +47,7 @@ import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.SideEffectsDeclaration;
 import org.qi4j.runtime.entity.association.EntityAssociationsModel;
 import org.qi4j.runtime.entity.association.EntityManyAssociationsModel;
+import org.qi4j.runtime.entity.association.EntityNamedAssociationsModel;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.property.PersistentPropertyModel;
 import org.qi4j.runtime.structure.ModelVisitor;
@@ -55,7 +58,6 @@ import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
-import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 import org.qi4j.spi.entitystore.EntityAlreadyExistsException;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
@@ -88,6 +90,7 @@ public final class EntityModel
                                         PropertyDeclarations propertyDecs,
                                         AssociationDeclarations associationDecs,
                                         ManyAssociationDeclarations manyAssociationDecs,
+                                        NamedAssociationDeclarations namedAssociationDecs,
                                         ConcernsDeclaration concernsDeclaration,
                                         Iterable<Class<?>> sideEffects,
                                         List<Class<?>> mixins,
@@ -99,7 +102,8 @@ public final class EntityModel
         EntityPropertiesModel entityPropertiesModel = new EntityPropertiesModel( constraintsModel, propertyDecs, immutable );
         EntityAssociationsModel associationsModel = new EntityAssociationsModel( constraintsModel, associationDecs );
         EntityManyAssociationsModel manyAssociationsModel = new EntityManyAssociationsModel( constraintsModel, manyAssociationDecs );
-        EntityStateModel stateModel = new EntityStateModel( entityPropertiesModel, associationsModel, manyAssociationsModel );
+        EntityNamedAssociationsModel namedAssociationsModel = new EntityNamedAssociationsModel( constraintsModel, namedAssociationDecs );
+        EntityStateModel stateModel = new EntityStateModel( entityPropertiesModel, associationsModel, manyAssociationsModel, namedAssociationsModel );
         EntityMixinsModel mixinsModel = new EntityMixinsModel( type, roles, mixins );
         SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( type, sideEffects );
         CompositeMethodsModel compositeMethodsModel = new CompositeMethodsModel( type,
@@ -182,8 +186,13 @@ public final class EntityModel
 
         EntityStateModel entityStateModel = (EntityStateModel) stateModel;
         entityType = new EntityType(
-            TypeName.nameOf( type() ), queryable,
-            mixinTypes, entityStateModel.propertyTypes(), entityStateModel.associationTypes(), entityStateModel.manyAssociationTypes()
+            TypeName.nameOf( type() ),
+            queryable,
+            mixinTypes,
+            entityStateModel.propertyTypes(),
+            entityStateModel.associationTypes(),
+            entityStateModel.manyAssociationTypes(),
+            entityStateModel.namedAssociationTypes()
         );
 
         resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), this, null, null );
@@ -284,10 +293,10 @@ public final class EntityModel
 
         {
             // Set new many-manyAssociations to empty
-            Set<ManyAssociationDescriptor> entityAssociations = state().manyAssociations();
-            for( ManyAssociationDescriptor associationDescriptor : entityAssociations )
+            Set<AssociationDescriptor> entityAssociations = state().manyAssociations();
+            for( AssociationDescriptor associationDescriptor : entityAssociations )
             {
-                entityState.getManyAssociation( associationDescriptor.manyAssociationType().qualifiedName() );
+                entityState.getManyAssociation( associationDescriptor.associationType().qualifiedName() );
             }
         }
     }

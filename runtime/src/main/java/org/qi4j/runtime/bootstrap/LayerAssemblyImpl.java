@@ -120,11 +120,11 @@ public final class LayerAssemblyImpl
     @Override
     public EntityDeclaration entities( Specification<? super EntityAssembly> specification )
     {
-        final List<EntityDeclaration> declarations = new ArrayList<EntityDeclaration>(  );
+        final List<EntityDeclaration> declarations = new ArrayList<EntityDeclaration>();
 
         for( ModuleAssemblyImpl moduleAssembly : moduleAssemblies.values() )
         {
-            declarations.add(moduleAssembly.entities( specification ));
+            declarations.add( moduleAssembly.entities( specification ) );
         }
 
         return new EntityDeclaration()
@@ -194,11 +194,11 @@ public final class LayerAssemblyImpl
     @Override
     public ServiceDeclaration services( Specification<? super ServiceAssembly> specification )
     {
-        final List<ServiceDeclaration> declarations = new ArrayList<ServiceDeclaration>(  );
+        final List<ServiceDeclaration> declarations = new ArrayList<ServiceDeclaration>();
 
         for( ModuleAssemblyImpl moduleAssembly : moduleAssemblies.values() )
         {
-            declarations.add(moduleAssembly.services( specification ));
+            declarations.add( moduleAssembly.services( specification ) );
         }
 
         return new ServiceDeclaration()
@@ -299,11 +299,11 @@ public final class LayerAssemblyImpl
     @Override
     public TransientDeclaration transients( Specification<? super TransientAssembly> specification )
     {
-        final List<TransientDeclaration> declarations = new ArrayList<TransientDeclaration>(  );
+        final List<TransientDeclaration> declarations = new ArrayList<TransientDeclaration>();
 
         for( ModuleAssemblyImpl moduleAssembly : moduleAssemblies.values() )
         {
-            declarations.add(moduleAssembly.transients( specification ));
+            declarations.add( moduleAssembly.transients( specification ) );
         }
 
         return new TransientDeclaration()
@@ -373,11 +373,11 @@ public final class LayerAssemblyImpl
     @Override
     public ValueDeclaration values( Specification<? super ValueAssembly> specification )
     {
-        final List<ValueDeclaration> declarations = new ArrayList<ValueDeclaration>(  );
+        final List<ValueDeclaration> declarations = new ArrayList<ValueDeclaration>();
 
         for( ModuleAssemblyImpl moduleAssembly : moduleAssemblies.values() )
         {
-            declarations.add(moduleAssembly.values( specification ));
+            declarations.add( moduleAssembly.values( specification ) );
         }
         return new ValueDeclaration()
         {
@@ -446,11 +446,11 @@ public final class LayerAssemblyImpl
     @Override
     public ObjectDeclaration objects( Specification<? super ObjectAssembly> specification )
     {
-        final List<ObjectDeclaration> declarations = new ArrayList<ObjectDeclaration>(  );
+        final List<ObjectDeclaration> declarations = new ArrayList<ObjectDeclaration>();
 
         for( ModuleAssemblyImpl moduleAssembly : moduleAssemblies.values() )
         {
-            declarations.add(moduleAssembly.objects( specification ));
+            declarations.add( moduleAssembly.objects( specification ) );
         }
         return new ObjectDeclaration()
         {
@@ -480,11 +480,11 @@ public final class LayerAssemblyImpl
     @Override
     public ImportedServiceDeclaration importedServices( Specification<? super ImportedServiceAssembly> specification )
     {
-        final List<ImportedServiceDeclaration> declarations = new ArrayList<ImportedServiceDeclaration>(  );
+        final List<ImportedServiceDeclaration> declarations = new ArrayList<ImportedServiceDeclaration>();
 
         for( ModuleAssemblyImpl moduleAssembly : moduleAssemblies.values() )
         {
-            declarations.add(moduleAssembly.importedServices( specification ));
+            declarations.add( moduleAssembly.importedServices( specification ) );
         }
         return new ImportedServiceDeclaration()
         {

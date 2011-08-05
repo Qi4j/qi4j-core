@@ -22,9 +22,11 @@ import java.util.HashSet;
 import java.util.Set;
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
-import static org.qi4j.api.util.Classes.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.qi4j.api.util.Classes.interfacesOf;
+import static org.qi4j.api.util.Classes.interfacesWithMethods;
 
 /**
  * Tests for Classes

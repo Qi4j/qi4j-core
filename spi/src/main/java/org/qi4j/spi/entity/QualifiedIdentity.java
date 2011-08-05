@@ -15,6 +15,7 @@
 package org.qi4j.spi.entity;
 
 import java.io.Serializable;
+import org.qi4j.api.common.TypeName;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.util.Classes;
 
@@ -71,6 +72,12 @@ public final class QualifiedIdentity
     {
         this.identity = identity;
         this.compositeType = clazz;
+    }
+
+    public QualifiedIdentity( String identity, TypeName typeName )
+    {
+        this.identity = identity;
+        this.compositeType = typeName.name();
     }
 
     protected QualifiedIdentity( String qualifiedIdentity )

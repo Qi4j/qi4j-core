@@ -24,8 +24,9 @@ import org.qi4j.api.specification.Specification;
  * module.addService(MyService.class).identifiedBy("myservice1");
  *
  * and then at an injection point you can do this:
- *
- * @Service @IdentifiedBy("myservice1") MyService service;
+ * <code><pre>
+ * &#64;Service &#64;IdentifiedBy("myservice1") MyService service;
+ * </pre></code>
  * to get only a service identified "myservice1".
  */
 @Retention( RetentionPolicy.RUNTIME )

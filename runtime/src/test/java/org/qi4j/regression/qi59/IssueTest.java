@@ -21,7 +21,7 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.constraints.annotation.NotEmpty;
-import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.core.testsupport.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
 
 import static org.junit.Assert.*;

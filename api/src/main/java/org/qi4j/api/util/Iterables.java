@@ -14,8 +14,13 @@
 
 package org.qi4j.api.util;
 
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
 import org.qi4j.api.specification.Specification;
 
 /**
@@ -23,7 +28,7 @@ import org.qi4j.api.specification.Specification;
  */
 public class Iterables
 {
-    public static <T,C extends Collection<T>> C addAll( C collection, Iterable<? extends T> iterable )
+    public static <T, C extends Collection<T>> C addAll( C collection, Iterable<? extends T> iterable )
     {
         for( T item : iterable )
         {
@@ -67,12 +72,14 @@ public class Iterables
     {
         Iterator<? extends X> iter = i.iterator();
         X item = null;
-        while (iter.hasNext())
+        while( iter.hasNext() )
+        {
             item = iter.next();
+        }
         return item;
     }
 
-    public static <X> Iterable<X> reverse(Iterable<X> iterable)
+    public static <X> Iterable<X> reverse( Iterable<X> iterable )
     {
         ArrayList<X> list = addAll( new ArrayList<X>(), iterable );
         Collections.reverse( list );
@@ -103,14 +110,14 @@ public class Iterables
         return true;
     }
 
-    public static <X,I extends Iterable<? extends X>> Iterable<X> flatten( I... multiIterator )
+    public static <X, I extends Iterable<? extends X>> Iterable<X> flatten( I... multiIterator )
     {
-        return new FlattenIterable<X,I>( Arrays.asList( multiIterator ) );
+        return new FlattenIterable<X, I>( Arrays.asList( multiIterator ) );
     }
 
-    public static <X,I extends Iterable<? extends X>> Iterable<X> flattenIterables( Iterable<I> multiIterator )
+    public static <X, I extends Iterable<? extends X>> Iterable<X> flattenIterables( Iterable<I> multiIterator )
     {
-        return new FlattenIterable<X,I>( multiIterator );
+        return new FlattenIterable<X, I>( multiIterator );
     }
 
     public static <FROM, TO> Iterable<TO> map( Function<? super FROM, TO> function, Iterable<FROM> from )
@@ -137,7 +144,7 @@ public class Iterables
 
     public static <FROM, TO> TO fold( Function<? super FROM, TO> function, Iterable<? extends FROM> i )
     {
-        return last(map(function, i));
+        return last( map( function, i ) );
     }
 
     private static class MapIterable<FROM, TO>
@@ -274,7 +281,7 @@ public class Iterables
         }
     }
 
-    private static class FlattenIterable<T,I extends Iterable<? extends T>>
+    private static class FlattenIterable<T, I extends Iterable<? extends T>>
         implements Iterable<T>
     {
         private Iterable<I> iterable;
@@ -286,10 +293,10 @@ public class Iterables
 
         public Iterator<T> iterator()
         {
-            return new FlattenIterator<T,I>( iterable.iterator() );
+            return new FlattenIterator<T, I>( iterable.iterator() );
         }
 
-        static class FlattenIterator<T,I extends Iterable<? extends T>>
+        static class FlattenIterator<T, I extends Iterable<? extends T>>
             implements Iterator<T>
         {
             private Iterator<I> iterator;

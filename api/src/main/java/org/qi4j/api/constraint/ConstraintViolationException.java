@@ -44,6 +44,8 @@ public class ConstraintViolationException
     extends IllegalArgumentException
 {
     private static final long serialVersionUID = 1L;
+    private static final String DEFAULT_VIOLATION_MESSAGE_PATTERN =
+        "Constraint violation in {0}.{1} for method {3} with constraint \"{4}({6})\", for value ''{5}''";
 
     private final Collection<ConstraintViolation> constraintViolations;
     private String methodName;
@@ -93,7 +95,8 @@ public class ConstraintViolationException
     /**
      * Creates localized messages of all the constraint violations that has occured.
      * <p/>
-     * The key &nbsp;"<code>Qi4j_ConstraintViolation_<i><strong>CompositeType</strong></code></i>" will be used to lookup the text formatting
+     * The key &nbsp;"<code>Qi4j_ConstraintViolation_<i><strong>CompositeType</strong></code></i>" will be used to
+     * lookup the text formatting
      * pattern from the ResourceBundle, where <strong><code><i>CompositeType</i></code></strong> is the
      * class name of the Composite where the constraint was violated. If such key does not exist, then the
      * key &nbsp;"<code>Qi4j_ConstraintViolation</code>" will be used, and if that one also doesn't exist, or
@@ -145,8 +148,7 @@ public class ConstraintViolationException
      */
     public String[] getLocalizedMessages( ResourceBundle bundle )
     {
-        String pattern = "Constraint violation in {0}.{1} for method {3} with constraint \"{4}({6})\", for value ''{5}''";
-
+        String pattern;
         ArrayList<String> list = new ArrayList<String>();
         for( ConstraintViolation violation : constraintViolations )
         {
@@ -165,7 +167,7 @@ public class ConstraintViolationException
                     }
                     catch( MissingResourceException e2 )
                     {
-                        // ignore. The default pattern will be used.
+                        pattern = DEFAULT_VIOLATION_MESSAGE_PATTERN;;
                     }
                 }
                 locale = bundle.getLocale();
@@ -173,6 +175,7 @@ public class ConstraintViolationException
             else
             {
                 locale = Locale.getDefault();
+                pattern = DEFAULT_VIOLATION_MESSAGE_PATTERN;;
             }
             MessageFormat format = new MessageFormat( pattern, locale );
 

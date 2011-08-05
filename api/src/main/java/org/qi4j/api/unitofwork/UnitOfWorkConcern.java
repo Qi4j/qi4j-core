@@ -91,8 +91,8 @@ public class UnitOfWorkConcern
         {
             UnitOfWorkRetry retryAnnot = method.getAnnotation( UnitOfWorkRetry.class );
             int maxTries = 0;
-            long delayFactor=0;
-            long initialDelay=0;
+            long delayFactor = 0;
+            long initialDelay = 0;
             if( retryAnnot != null )
             {
                 maxTries = retryAnnot.retries();

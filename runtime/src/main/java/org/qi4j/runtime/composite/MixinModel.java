@@ -133,6 +133,11 @@ public final class MixinModel
 
     public Object newInstance( InjectionContext injectionContext )
     {
+        return newInstance( injectionContext, true );
+    }
+
+    public Object newInstance( InjectionContext injectionContext, boolean initialize )
+    {
         Object mixin;
         CompositeInstance compositeInstance = injectionContext.compositeInstance();
         try
@@ -163,7 +168,7 @@ public final class MixinModel
         }
         injectedFieldsModel.inject( injectionContext, mixin );
         injectedMethodsModel.inject( injectionContext, mixin );
-        if( mixin instanceof Initializable )
+        if( initialize && mixin instanceof Initializable )
         {
             try
             {

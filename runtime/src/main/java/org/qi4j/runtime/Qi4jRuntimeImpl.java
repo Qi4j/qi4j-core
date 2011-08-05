@@ -143,13 +143,13 @@ public final class Qi4jRuntimeImpl
         }
         catch( NoSuchEntityException e )
         {
-            return (T) initializeConfigurationInstance( serviceComposite, uow, serviceModel, identity );
+            return initializeConfigurationInstance( serviceComposite, uow, serviceModel, identity );
         }
         catch( EntityTypeNotFoundException e )
         {
-            return (T) initializeConfigurationInstance( serviceComposite, uow, serviceModel, identity );
+            return initializeConfigurationInstance( serviceComposite, uow, serviceModel, identity );
         }
-        return (T) configuration;
+        return configuration;
     }
 
     private <T> T initializeConfigurationInstance( ServiceComposite serviceComposite,

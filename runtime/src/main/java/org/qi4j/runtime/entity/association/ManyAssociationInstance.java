@@ -197,6 +197,6 @@ public class ManyAssociationInstance<T>
 
     private ManyAssociationState associated()
     {
-        return entityState.getManyAssociation( ( model ).manyAssociationType().qualifiedName() );
+        return entityState.getManyAssociation( ( model ).associationType().qualifiedName() );
     }
 }

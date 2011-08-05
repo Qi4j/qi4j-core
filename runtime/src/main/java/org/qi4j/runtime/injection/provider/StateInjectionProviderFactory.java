@@ -5,6 +5,7 @@ import org.qi4j.api.entity.association.AbstractAssociation;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.EntityStateHolder;
 import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.entity.association.NamedAssociation;
 import org.qi4j.api.injection.scope.State;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.StateHolder;
@@ -21,7 +22,6 @@ import org.qi4j.spi.composite.TransientDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityStateDescriptor;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
-import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.spi.value.ValueDescriptor;
@@ -128,7 +128,7 @@ public final class StateInjectionProviderFactory
             {
                 name = annotation.value();
             }
-            ManyAssociationDescriptor model = descriptor.getManyAssociationByName( name );
+            AssociationDescriptor model = descriptor.getManyAssociationByName( name );
 
             // No such association found
             if( model == null )
@@ -137,6 +137,30 @@ public final class StateInjectionProviderFactory
             }
 
             return new ManyAssociationInjectionProvider( model );
+        }
+        else if( NamedAssociation.class.isAssignableFrom( dependencyModel.rawInjectionType() ) )
+        {
+            // @State NamedAssociation<MyEntity> name;
+            EntityStateDescriptor descriptor = ( (EntityDescriptor) resolution.object() ).state();
+            State annotation = (State) dependencyModel.injectionAnnotation();
+            String name;
+            if( annotation.value().equals( "" ) )
+            {
+                name = resolution.field().getName();
+            }
+            else
+            {
+                name = annotation.value();
+            }
+            AssociationDescriptor model = descriptor.getNamedAssociationByName( name );
+
+            // No such association found
+            if( model == null )
+            {
+                return null;
+            }
+
+            return new NamedAssociationInjectionProvider( model );
         }
 
         throw new InjectionProviderException( "Injected value has invalid type" );
@@ -196,9 +220,9 @@ public final class StateInjectionProviderFactory
     static private class ManyAssociationInjectionProvider
         implements InjectionProvider, Serializable
     {
-        private final ManyAssociationDescriptor manyAssociationDescriptor;
+        private final AssociationDescriptor manyAssociationDescriptor;
 
-        public ManyAssociationInjectionProvider( ManyAssociationDescriptor manyAssociationDescriptor )
+        public ManyAssociationInjectionProvider( AssociationDescriptor manyAssociationDescriptor )
         {
             this.manyAssociationDescriptor = manyAssociationDescriptor;
         }
@@ -215,6 +239,32 @@ public final class StateInjectionProviderFactory
             else
             {
                 throw new InjectionProviderException( "Non-optional association " + manyAssociationDescriptor.qualifiedName() + " had no association" );
+            }
+        }
+    }
+
+    static private class NamedAssociationInjectionProvider
+        implements InjectionProvider, Serializable
+    {
+        private final AssociationDescriptor namedAssociationDescriptor;
+
+        public NamedAssociationInjectionProvider( AssociationDescriptor namedAssociationDescriptor )
+        {
+            this.namedAssociationDescriptor = namedAssociationDescriptor;
+        }
+
+        public Object provideInjection( InjectionContext context )
+            throws InjectionProviderException
+        {
+            EntityStateHolder state = (EntityStateHolder) context.state();
+            NamedAssociation abstractAssociation = state.getNamedAssociation( namedAssociationDescriptor.accessor() );
+            if( abstractAssociation != null )
+            {
+                return abstractAssociation;
+            }
+            else
+            {
+                throw new InjectionProviderException( "Non-optional association " + namedAssociationDescriptor.qualifiedName() + " had no association" );
             }
         }
     }

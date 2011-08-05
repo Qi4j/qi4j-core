@@ -77,9 +77,8 @@ public final class ValueBuilderInstance<T>
         // Instantiate given value type
         if( prototypeInstance == null )
         {
-            prototypeInstance = valueModel.newValueInstance( moduleInstance, getState() );
+            prototypeInstance = valueModel.newValueInstance( moduleInstance, getState(), false );
         }
-
         return prototypeInstance.<T>proxy();
     }
 
@@ -106,7 +105,10 @@ public final class ValueBuilderInstance<T>
         {
             instanceState = valueModel.newState( state );
         }
-
+        if( prototypeInstance != null )
+        {
+            prototypeInstance.initializeMixins();
+        }
         valueModel.checkConstraints( instanceState );
         ValueInstance valueInstance = valueModel.newValueInstance( moduleInstance, instanceState );
         return valueInstance.<T>proxy();

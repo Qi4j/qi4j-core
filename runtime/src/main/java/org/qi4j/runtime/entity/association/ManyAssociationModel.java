@@ -24,6 +24,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.common.TypeName;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.constraint.ConstraintViolation;
 import org.qi4j.api.constraint.ConstraintViolationException;
@@ -38,8 +39,8 @@ import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.runtime.unitofwork.BuilderEntityState;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
-import org.qi4j.spi.entity.association.ManyAssociationType;
+import org.qi4j.spi.entity.association.AssociationDescriptor;
+import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.util.SerializationUtil;
 
 import static org.qi4j.api.util.Classes.*;
@@ -48,7 +49,7 @@ import static org.qi4j.api.util.Classes.*;
  * JAVADOC
  */
 public final class ManyAssociationModel
-    implements ManyAssociationDescriptor, ConstraintsCheck, Serializable
+    implements AssociationDescriptor, ConstraintsCheck, Serializable
 {
     private ValueConstraintsInstance associationConstraints;
     private MetaInfo metaInfo;
@@ -59,7 +60,7 @@ public final class ManyAssociationModel
     private boolean queryable;
     private boolean immutable;
     private boolean aggregated;
-    private ManyAssociationType manyAssociationType;
+    private AssociationType manyAssociationType;
     private AssociationInfo builderInfo;
 
     private void writeObject( ObjectOutputStream out )
@@ -98,7 +99,7 @@ public final class ManyAssociationModel
         this.associationConstraints = associationConstraintsInstance;
         this.accessor = accessor;
         initialize();
-        this.manyAssociationType = new ManyAssociationType( qualifiedName, getRawClass( type ).getName(), queryable );
+        this.manyAssociationType = new AssociationType( qualifiedName, TypeName.nameOf( type ), queryable );
         this.builderInfo = new GenericAssociationInfo( accessor, metaInfo, false );
     }
 
@@ -143,7 +144,7 @@ public final class ManyAssociationModel
         return accessor;
     }
 
-    public ManyAssociationType manyAssociationType()
+    public AssociationType associationType()
     {
         return manyAssociationType;
     }

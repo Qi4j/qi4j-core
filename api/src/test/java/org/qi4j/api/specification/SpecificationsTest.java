@@ -17,7 +17,7 @@ package org.qi4j.api.specification;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.equalTo;
 
 /**
  * JAVADOC

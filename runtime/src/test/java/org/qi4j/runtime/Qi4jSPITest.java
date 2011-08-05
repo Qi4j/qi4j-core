@@ -23,15 +23,16 @@ import org.qi4j.api.entity.association.AbstractAssociation;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.EntityStateHolder;
 import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.entity.association.NamedAssociation;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.core.testsupport.AbstractQi4jTest;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityStateDescriptor;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.property.PropertyDescriptor;
-import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
 
 import static org.junit.Assert.*;
@@ -95,7 +96,7 @@ public class Qi4jSPITest
             assertThat( "Properties could be listed", prop, CoreMatchers.notNullValue() );
         }
 
-        EntityStateDescriptor descriptor = (EntityStateDescriptor) entityDescriptor.state();
+        EntityStateDescriptor descriptor = entityDescriptor.state();
         for( AssociationDescriptor associationDescriptor : descriptor.associations() )
         {
             AbstractAssociation assoc = state.getAssociation( associationDescriptor.accessor() );
@@ -113,6 +114,8 @@ public class Qi4jSPITest
         Association<TestEntity> association();
 
         ManyAssociation<TestEntity> manyAssociation();
+
+        NamedAssociation<TestEntity> namedAssociation();
     }
 
     public interface TestEntity2
@@ -125,5 +128,7 @@ public class Qi4jSPITest
         Association<TestEntity> association();
 
         ManyAssociation<TestEntity> manyAssociation();
+
+        NamedAssociation<TestEntity> namedAssociation();
     }
 }

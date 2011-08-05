@@ -39,6 +39,8 @@ import org.qi4j.api.query.grammar.LessThanPredicate;
 import org.qi4j.api.query.grammar.ManyAssociationContainsPredicate;
 import org.qi4j.api.query.grammar.ManyAssociationReference;
 import org.qi4j.api.query.grammar.MatchesPredicate;
+import org.qi4j.api.query.grammar.NamedAssociationContainsPredicate;
+import org.qi4j.api.query.grammar.NamedAssociationReference;
 import org.qi4j.api.query.grammar.Negation;
 import org.qi4j.api.query.grammar.NotEqualsPredicate;
 import org.qi4j.api.query.grammar.OrderBy;
@@ -61,6 +63,7 @@ import org.qi4j.runtime.query.grammar.impl.LessOrEqualPredicateImpl;
 import org.qi4j.runtime.query.grammar.impl.LessThanPredicateImpl;
 import org.qi4j.runtime.query.grammar.impl.ManyAssociationContainsPredicateImpl;
 import org.qi4j.runtime.query.grammar.impl.MatchesPredicateImpl;
+import org.qi4j.runtime.query.grammar.impl.NamedAssociationContainsPredicateImpl;
 import org.qi4j.runtime.query.grammar.impl.NegationImpl;
 import org.qi4j.runtime.query.grammar.impl.NotEqualsPredicateImpl;
 import org.qi4j.runtime.query.grammar.impl.OrderByImpl;
@@ -322,8 +325,8 @@ public class QueryExpressionsProviderImpl
         return new ContainsAllPredicateImpl<T, C>( propertyRef, collectionValues );
     }
 
-    public <T, C extends Collection<T>> ContainsPredicate<T, C> newContainsPredicate( PropertyReference<C> propertyRef,
-                                                                                      SingleValueExpression<T> singleValueExpression
+    public <T, C extends Collection<T>> ContainsPredicate<T, C> newContainsPredicate(
+        PropertyReference<C> propertyRef, SingleValueExpression<T> singleValueExpression
     )
     {
         return new ContainsPredicateImpl<T, C>( propertyRef, singleValueExpression );
@@ -334,5 +337,13 @@ public class QueryExpressionsProviderImpl
     )
     {
         return new ManyAssociationContainsPredicateImpl<T>( associationReference, singleValueExpression );
+    }
+
+    @Override
+    public <T> NamedAssociationContainsPredicate<T> newNamedAssociationContainsPredicate( NamedAssociationReference assocRef,
+                                                                                          SingleValueExpression<T> singleValueExpression
+    )
+    {
+        return new NamedAssociationContainsPredicateImpl<T>( assocRef, singleValueExpression );
     }
 }

@@ -18,6 +18,7 @@ package org.qi4j.runtime.entity;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.EntityComposite;
@@ -26,6 +27,7 @@ import org.qi4j.api.entity.Identity;
 import org.qi4j.api.entity.LifecycleException;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.entity.association.NamedAssociation;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkException;
@@ -39,7 +41,6 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStateDescriptor;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
-import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 
 /**
  * Entity instance
@@ -269,14 +270,30 @@ public final class EntityInstance
                 }
             }
         }
-        Set<ManyAssociationDescriptor> manyAssociations = stateDescriptor.manyAssociations();
-        for( ManyAssociationDescriptor association : manyAssociations )
+        Set<AssociationDescriptor> manyAssociations = stateDescriptor.manyAssociations();
+        for( AssociationDescriptor association : manyAssociations )
         {
             if( association.isAggregated() )
             {
                 ManyAssociation manyAssoc = state.getManyAssociation( association.accessor() );
                 for( Object entity : manyAssoc )
                 {
+                    aggregatedEntities.add( entity );
+                }
+            }
+        }
+
+        Set<AssociationDescriptor> namedAssociations = stateDescriptor.namedAssociations();
+        for( AssociationDescriptor association : namedAssociations )
+        {
+            if( association.isAggregated() )
+            {
+                NamedAssociation namedAssoc = state.getNamedAssociation( association.accessor() );
+                Iterator<String> iterator = namedAssoc.iterator();
+                while( iterator.hasNext() )
+                {
+                    String entityId = iterator.next();
+                    Object entity = namedAssoc.get( entityId );
                     aggregatedEntities.add( entity );
                 }
             }

@@ -1,4 +1,4 @@
-/*  Copyright 2007 Niclas Hedhman.
+/*  Copyright 2007-2011 Niclas Hedhman.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.qi4j.spi.entitystore.helpers;
 
 import java.io.Serializable;
@@ -23,10 +24,12 @@ import org.json.JSONObject;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.entitystore.map.MapEntityStore;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.ManyAssociationState;
+import org.qi4j.spi.entity.NamedAssociationState;
 import org.qi4j.spi.entitystore.DefaultEntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.property.PropertyDescriptor;
@@ -39,14 +42,15 @@ import org.qi4j.spi.structure.ModuleSPI;
 public final class JSONEntityState
     implements EntityState, Serializable
 {
-    public static final String JSON_KEY_PROPERTIES = "properties";
-    public static final String JSON_KEY_ASSOCIATIONS = "associations";
-    public static final String JSON_KEY_MANYASSOCIATIONS = "manyassociations";
-    public static final String JSON_KEY_IDENTITY = "identity";
-    public static final String JSON_KEY_APPLICATION_VERSION = "application_version";
-    public static final String JSON_KEY_TYPE = "type";
-    public static final String JSON_KEY_VERSION = "version";
-    public static final String JSON_KEY_MODIFIED = "modified";
+    public static final String JSON_KEY_PROPERTIES = MapEntityStore.JSONKeys.properties.name();
+    public static final String JSON_KEY_ASSOCIATIONS = MapEntityStore.JSONKeys.associations.name();
+    public static final String JSON_KEY_MANYASSOCIATIONS = MapEntityStore.JSONKeys.manyassociations.name();
+    public static final String JSON_KEY_NAMEDASSOCIATIONS = MapEntityStore.JSONKeys.namedassociations.name();
+    public static final String JSON_KEY_IDENTITY = MapEntityStore.JSONKeys.identity.name();
+    public static final String JSON_KEY_APPLICATION_VERSION = MapEntityStore.JSONKeys.application_version.name();
+    public static final String JSON_KEY_TYPE = MapEntityStore.JSONKeys.type.name();
+    public static final String JSON_KEY_VERSION = MapEntityStore.JSONKeys.version.name();
+    public static final String JSON_KEY_MODIFIED = MapEntityStore.JSONKeys.modified.name();
     private static final String[] EMPTY_NAMES = new String[ 0 ];
     private static final String[] CLONE_NAMES = {
         JSON_KEY_IDENTITY,
@@ -177,14 +181,14 @@ public final class JSONEntityState
         try
         {
             Object jsonValue = state.getJSONObject( JSON_KEY_ASSOCIATIONS ).opt( stateName.name() );
-            if( jsonValue == null )
+            if( jsonValue == null || jsonValue == JSONObject.NULL )
             {
                 return null;
             }
-
-            EntityReference value = jsonValue == JSONObject.NULL ? null : EntityReference.parseEntityReference(
-                (String) jsonValue );
-            return value;
+            else
+            {
+                return EntityReference.parseEntityReference( (String) jsonValue );
+            }
         }
         catch( JSONException e )
         {
@@ -197,8 +201,8 @@ public final class JSONEntityState
         try
         {
             cloneStateIfGlobalStateLoaded();
-            state.getJSONObject( JSON_KEY_ASSOCIATIONS )
-                .put( stateName.name(), newEntity == null ? null : newEntity.identity() );
+            JSONObject jsonObject = state.getJSONObject( JSON_KEY_ASSOCIATIONS );
+            jsonObject.put( stateName.name(), newEntity == null ? null : newEntity.identity() );
             markUpdated();
         }
         catch( JSONException e )
@@ -219,6 +223,26 @@ public final class JSONEntityState
                 manyAssociations.put( stateName.name(), jsonValues );
             }
             return new JSONManyAssociationState( this, jsonValues );
+        }
+        catch( JSONException e )
+        {
+            throw new EntityStoreException( e );
+        }
+    }
+
+    @Override
+    public NamedAssociationState getNamedAssociation( QualifiedName stateName )
+    {
+        try
+        {
+            JSONObject namedAssociations = state.getJSONObject( JSON_KEY_NAMEDASSOCIATIONS );
+            JSONObject jsonValues = namedAssociations.optJSONObject( stateName.name() );
+            if( jsonValues == null )
+            {
+                jsonValues = new JSONObject();
+                namedAssociations.put( stateName.name(), jsonValues );
+            }
+            return new JSONNamedAssociationState( this, jsonValues );
         }
         catch( JSONException e )
         {
@@ -282,10 +306,12 @@ public final class JSONEntityState
             JSONObject newProperties = cloneJSON( state.getJSONObject( JSON_KEY_PROPERTIES ) );
             JSONObject newAssoc = cloneJSON( state.getJSONObject( JSON_KEY_ASSOCIATIONS ) );
             JSONObject newManyAssoc = cloneJSON( state.getJSONObject( JSON_KEY_MANYASSOCIATIONS ) );
+            JSONObject newNamedAssoc = cloneJSON( state.getJSONObject( JSON_KEY_NAMEDASSOCIATIONS ) );
             JSONObject stateClone = new JSONObject( state, CLONE_NAMES );
             stateClone.put( JSON_KEY_PROPERTIES, newProperties );
             stateClone.put( JSON_KEY_ASSOCIATIONS, newAssoc );
             stateClone.put( JSON_KEY_MANYASSOCIATIONS, newManyAssoc );
+            stateClone.put( JSON_KEY_NAMEDASSOCIATIONS, newNamedAssoc );
             state = stateClone;
         }
         catch( JSONException e )

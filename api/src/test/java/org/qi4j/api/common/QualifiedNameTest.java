@@ -3,7 +3,7 @@ package org.qi4j.api.common;
 import org.junit.Test;
 import org.qi4j.api.util.NullArgumentException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class QualifiedNameTest
 {

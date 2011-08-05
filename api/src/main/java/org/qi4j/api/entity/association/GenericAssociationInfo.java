@@ -28,6 +28,12 @@ import org.qi4j.api.property.Immutable;
 public final class GenericAssociationInfo
     implements AssociationInfo
 {
+    private QualifiedName qualifiedName;
+    private Type type;
+    private MetaInfo metainfo;
+    private boolean immutable;
+    private boolean aggregated;
+
     public static Type getAssociationType( Method accessor )
     {
         return getAssociationType( accessor.getGenericReturnType() );
@@ -56,12 +62,6 @@ public final class GenericAssociationInfo
         return null;
     }
 
-    private QualifiedName qualifiedName;
-    private Type type;
-    private MetaInfo metainfo;
-    private boolean immutable;
-    private boolean aggregated;
-
     public GenericAssociationInfo( MetaInfo infos,
                                    boolean immutable,
                                    boolean aggregated,
@@ -78,14 +78,20 @@ public final class GenericAssociationInfo
 
     public GenericAssociationInfo( Method accessor, MetaInfo metainfo )
     {
-        this( metainfo, metainfo.get( Immutable.class ) != null, metainfo.get( Aggregated.class ) != null, QualifiedName
-            .fromMethod( accessor ), getAssociationType( accessor.getGenericReturnType() ) );
+        this( metainfo,
+              metainfo.get( Immutable.class ) != null,
+              metainfo.get( Aggregated.class ) != null,
+              QualifiedName.fromMethod( accessor ),
+              getAssociationType( accessor.getGenericReturnType() ) );
     }
 
     public GenericAssociationInfo( Method accessor, MetaInfo metainfo, boolean immutable )
     {
-        this( metainfo, immutable, metainfo.get( Aggregated.class ) != null, QualifiedName.fromMethod( accessor ), getAssociationType( accessor
-                                                                                                                                           .getGenericReturnType() ) );
+        this( metainfo,
+              immutable,
+              metainfo.get( Aggregated.class ) != null,
+              QualifiedName.fromMethod( accessor ),
+              getAssociationType( accessor.getGenericReturnType() ) );
     }
 
     public <T> T metaInfo( Class<T> infoType )

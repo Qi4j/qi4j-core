@@ -14,6 +14,12 @@
 
 package org.qi4j.runtime.types;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.lang.reflect.Type;
+import java.util.Map;
+import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,12 +30,6 @@ import org.qi4j.api.util.Classes;
 import org.qi4j.spi.property.DefaultValues;
 import org.qi4j.spi.property.ValueType;
 import org.qi4j.spi.util.Base64Encoder;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.lang.reflect.Type;
-import java.util.*;
 
 /**
  * Map type. This handles instances of Map

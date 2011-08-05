@@ -8,9 +8,10 @@ import java.lang.annotation.Target;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-/** This annotation describes the retries that should occur in case of {@link ConcurrentEntityModificationException}
+/**
+ * This annotation describes the retries that should occur in case of {@link ConcurrentEntityModificationException}
  * occurs.
-  */
+ */
 @Retention( RUNTIME )
 @Target( METHOD )
 @Inherited

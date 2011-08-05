@@ -1,10 +1,11 @@
-package org.qi4j.test.entity;
+package org.qi4j.core.testsupport;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.qi4j.api.common.Optional;
@@ -13,6 +14,7 @@ import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.entity.association.NamedAssociation;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.property.Property;
@@ -27,12 +29,9 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
-import org.qi4j.test.AbstractQi4jTest;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 /**
  * Abstract satisfiedBy with tests for the EntityStore interface.
@@ -51,8 +50,14 @@ public abstract class AbstractEntityStoreTest
     {
         module.services( UuidIdentityGeneratorService.class );
         module.entities( TestEntity.class );
+        module.entities( Company.class );
+        module.entities( Person.class );
         module.values( TestValue.class, TestValue2.class, TjabbaValue.class );
         module.objects( getClass() );
+        module.forMixin( Employer.class )
+            .declareDefaults()
+            .employees();
+        module.forMixin( Company.class ).declareDefaults().name().set( "A Company" );
     }
 
     @Before
@@ -364,6 +369,73 @@ public abstract class AbstractEntityStoreTest
         }
     }
 
+    @Test
+    public void testAssociation()
+    {
+        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+
+        try
+        {
+            Company company = unitOfWork.newEntity( Company.class );
+            Assert.assertEquals( "Company Name Default", "A Company", company.name().get() );
+
+            {
+                EntityBuilder<Company> builder = unitOfWork.newEntityBuilder( Company.class );
+                final Company companyPrototype = builder.instance();
+                companyPrototype.name().set( "JayWay" );
+                company = builder.newInstance();
+                Assert.assertEquals( "Company Name ", "JayWay", company.name().get() );
+            }
+
+            company.name().set( "Jayway" );
+            Assert.assertEquals( "Company Name ", "Jayway", company.name().get() );
+
+            Person rickard = createPerson( "Rickard" );
+            Person niclas = createPerson( "Niclas" );
+            Person peter = createPerson( "Peter" );
+
+            company.employees().add( 0, rickard );
+            company.employees().add( 1, niclas );
+            company.employees().add( 2, peter );
+
+            NamedAssociation<Person> roles = company.roles();
+            roles.put( "CEO", rickard );
+            roles.put( "CTO", niclas );
+            roles.put( "COO", peter );
+
+            for( Employer employer : rickard.employers() )
+            {
+                assertEquals( "Jayway", ( (Nameable) employer ).name().get() );
+            }
+
+            assertEquals( "Niclas", roles.get( "CTO" ).name().get() );
+            assertEquals( "Rickard", roles.get( "CEO" ).name().get() );
+            assertEquals( "Peter", roles.get( "COO" ).name().get() );
+            Person cfo = roles.get( "CFO" );
+            assertNull( "Make sure CFO is not found.", cfo );
+        }
+        finally
+        {
+            unitOfWork.discard();
+        }
+    }
+
+    private Company createCompany( String companyName )
+    {
+        UnitOfWork uow = unitOfWorkFactory.currentUnitOfWork();
+        EntityBuilder<Company> builder = uow.newEntityBuilder( Company.class );
+        builder.instance().name().set( companyName );
+        return builder.newInstance();
+    }
+
+    private Person createPerson( String personName )
+    {
+        UnitOfWork uow = unitOfWorkFactory.currentUnitOfWork();
+        EntityBuilder<Person> builder = uow.newEntityBuilder( Person.class );
+        builder.instance().name().set( personName );
+        return builder.newInstance();
+    }
+
     public interface TestEntity
         extends EntityComposite
     {
@@ -401,6 +473,8 @@ public abstract class AbstractEntityStoreTest
         Association<TestEntity> unsetAssociation();
 
         ManyAssociation<TestEntity> manyAssociation();
+
+        NamedAssociation<TestEntity> namedAssociation();
     }
 
     public interface TjabbaValue
@@ -437,6 +511,36 @@ public abstract class AbstractEntityStoreTest
         Property<Tjabba> tjabbaProperty();
 
         Property<Map<String, String>> serializableProperty();
+    }
+
+    public interface Company
+        extends Nameable,
+                Employer,
+                EntityComposite
+    {
+        NamedAssociation<Person> roles();
+    }
+
+    public interface Person
+        extends Nameable,
+                Employee,
+                EntityComposite
+    {
+    }
+
+    public interface Nameable
+    {
+        Property<String> name();
+    }
+
+    public interface Employer
+    {
+        ManyAssociation<Employee> employees();
+    }
+
+    public interface Employee
+    {
+        ManyAssociation<Employer> employers();
     }
 
     public interface TestValue2

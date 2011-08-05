@@ -18,7 +18,6 @@ import java.util.List;
 import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.bootstrap.ImportedServiceAssembly;
 import org.qi4j.runtime.service.ImportedServiceModel;
