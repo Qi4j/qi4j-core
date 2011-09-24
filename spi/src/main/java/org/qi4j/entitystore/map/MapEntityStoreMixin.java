@@ -19,7 +19,19 @@
 
 package org.qi4j.entitystore.map;
 
-import org.json.*;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+import org.json.JSONWriter;
 import org.qi4j.api.cache.CacheOptions;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.QualifiedName;
@@ -42,7 +54,12 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
-import org.qi4j.spi.entitystore.*;
+import org.qi4j.spi.entitystore.DefaultEntityStoreUnitOfWork;
+import org.qi4j.spi.entitystore.EntityStore;
+import org.qi4j.spi.entitystore.EntityStoreException;
+import org.qi4j.spi.entitystore.EntityStoreSPI;
+import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
+import org.qi4j.spi.entitystore.StateCommitter;
 import org.qi4j.spi.entitystore.helpers.DefaultEntityState;
 import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.property.PropertyType;
@@ -51,11 +68,6 @@ import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.spi.structure.ModuleSPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
-import java.util.*;
 
 /**
  * Implementation of EntityStore that works with an implementation of MapEntityStore. Implement
@@ -110,7 +122,8 @@ public class MapEntityStoreMixin
 
     public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork,
                                        EntityReference identity,
-                                       EntityDescriptor entityDescriptor )
+                                       EntityDescriptor entityDescriptor
+    )
     {
         return new DefaultEntityState( (DefaultEntityStoreUnitOfWork) unitOfWork, identity, entityDescriptor );
     }
@@ -178,21 +191,24 @@ public class MapEntityStoreMixin
     {
         return new Input<EntityState, EntityStoreException>()
         {
-           @Override
-           public <ReceiverThrowableType extends Throwable> void transferTo(Output<? super EntityState, ReceiverThrowableType> output) throws EntityStoreException, ReceiverThrowableType
-           {
+            @Override
+            public <ReceiverThrowableType extends Throwable> void transferTo( Output<? super EntityState, ReceiverThrowableType> output )
+                throws EntityStoreException, ReceiverThrowableType
+            {
                 output.receiveFrom( new Sender<EntityState, EntityStoreException>()
                 {
-                   @Override
-                   public <ReceiverThrowableType extends Throwable> void sendTo(final Receiver<? super EntityState, ReceiverThrowableType> receiver) throws ReceiverThrowableType, EntityStoreException
-                   {
+                    @Override
+                    public <ReceiverThrowableType extends Throwable> void sendTo( final Receiver<? super EntityState, ReceiverThrowableType> receiver )
+                        throws ReceiverThrowableType, EntityStoreException
+                    {
                         Usecase usecase = UsecaseBuilder
                             .buildUsecase( "qi4j.entitystore.entitystates" )
                             .with( CacheOptions.NEVER )
                             .newUsecase();
 
                         final DefaultEntityStoreUnitOfWork uow =
-                            new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module, usecase, System.currentTimeMillis() );
+                            new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module, usecase, System
+                                .currentTimeMillis() );
 
                         final List<EntityState> migrated = new ArrayList<EntityState>();
 
@@ -200,9 +216,10 @@ public class MapEntityStoreMixin
                         {
                             mapEntityStore.entityStates().transferTo( new Output<Reader, ReceiverThrowableType>()
                             {
-                               @Override
-                               public <SenderThrowableType extends Throwable> void receiveFrom(Sender<? extends Reader, SenderThrowableType> sender) throws ReceiverThrowableType, SenderThrowableType
-                               {
+                                @Override
+                                public <SenderThrowableType extends Throwable> void receiveFrom( Sender<? extends Reader, SenderThrowableType> sender )
+                                    throws ReceiverThrowableType, SenderThrowableType
+                                {
                                     sender.sendTo( new Receiver<Reader, ReceiverThrowableType>()
                                     {
                                         public void receive( Reader item )
@@ -323,7 +340,7 @@ public class MapEntityStoreMixin
             }
 
             JSONWriter namedAssociations = manyAssociations.endObject().key( "namedassociations" ).object();
-            for( Map.Entry<QualifiedName, Map<String,EntityReference>> stateNameListEntry : state.namedAssociations()
+            for( Map.Entry<QualifiedName, Map<String, EntityReference>> stateNameListEntry : state.namedAssociations()
                 .entrySet() )
             {
                 JSONWriter assocs = manyAssociations.key( stateNameListEntry.getKey().name() ).array();
@@ -435,7 +452,7 @@ public class MapEntityStoreMixin
             }
 
             Map<QualifiedName, List<EntityReference>> manyAssociations = createManyAssociations( jsonObject, entityDescriptor );
-            Map<QualifiedName,Map<String, EntityReference>> namedAssociations = createNamedAssociations( jsonObject, entityDescriptor );
+            Map<QualifiedName, Map<String, EntityReference>> namedAssociations = createNamedAssociations( jsonObject, entityDescriptor );
 
             return new DefaultEntityState( unitOfWork,
                                            version,
@@ -486,16 +503,20 @@ public class MapEntityStoreMixin
         return manyAssociations;
     }
 
-    private Map<QualifiedName, Map<String,EntityReference>> createNamedAssociations( JSONObject jsonObject,
-                                                                              EntityDescriptor entityDescriptor
+    private Map<QualifiedName, Map<String, EntityReference>> createNamedAssociations( JSONObject jsonObject,
+                                                                                      EntityDescriptor entityDescriptor
     )
         throws JSONException
     {
-        Map<QualifiedName, Map<String,EntityReference>> namedAssociations = new HashMap<QualifiedName, Map<String,EntityReference>>();
+        Map<QualifiedName, Map<String, EntityReference>> namedAssociations = new HashMap<QualifiedName, Map<String, EntityReference>>();
+        if( !jsonObject.has( "namedassociations" ) )
+        {
+            return namedAssociations;
+        }
         JSONObject namedAssocs = jsonObject.getJSONObject( "namedassociations" );
         for( AssociationDescriptor namedAssociationType : entityDescriptor.state().namedAssociations() )
         {
-            Map<String, EntityReference> references = new HashMap<String,EntityReference>();
+            Map<String, EntityReference> references = new HashMap<String, EntityReference>();
             try
             {
                 JSONObject jsonValues = namedAssocs.getJSONObject( namedAssociationType.qualifiedName().name() );
